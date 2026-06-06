@@ -1344,24 +1344,41 @@ h1, h2, h3, h4, h5, h6 {
 
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px;
+    gap: 10px;
   }
 
   .kpi-card {
-    padding: 14px;
+    padding: 14px 12px;
+    flex-direction: row;
+    gap: 10px;
   }
 
   .kpi-value {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    margin: 4px 0;
   }
 
   .kpi-title {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
 
   .kpi-icon-wrapper {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
+
+  .kpi-icon-wrapper svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .topbar {
+    padding: 8px 12px;
+    height: auto;
+    min-height: 52px;
   }
 
   .dashboard-middle-row {
@@ -1375,14 +1392,15 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .card {
-    padding: 16px;
-    margin-bottom: 16px;
+    padding: 14px;
+    margin-bottom: 14px;
   }
 
   .modal-content {
     max-height: 95vh;
     border-radius: var(--radius-md);
     max-width: 100%;
+    margin: 8px;
   }
   
   .modal-body {
@@ -1404,12 +1422,16 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .app-table {
-    min-width: 600px;
+    min-width: 550px;
   }
 
   .table-header-controls {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .table-search-input {
+    width: 100%;
   }
 
   .table-filters {
@@ -1468,10 +1490,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Extra small mobile < 480px */
 @media (max-width: 480px) {
-  .kpi-grid {
-    grid-template-columns: 1fr !important;
-  }
-
   .topbar {
     padding: 8px 12px;
     height: auto;
@@ -1496,12 +1514,34 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .kpi-card {
+    padding: 12px 10px;
     flex-direction: row;
-    gap: 12px;
+    gap: 10px;
   }
 
   .kpi-value {
     font-size: 1.1rem;
+  }
+
+  .kpi-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .kpi-icon-wrapper {
+    width: 36px;
+    height: 36px;
+  }
+
+  .kpi-icon-wrapper svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .card {
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
   }
 
   .card-title {
@@ -1511,10 +1551,11 @@ h1, h2, h3, h4, h5, h6 {
   .modal-content {
     margin: 8px;
     max-height: 98vh;
+    border-radius: 12px;
   }
 
   .chat-input-bar {
-    padding: 12px;
+    padding: 10px;
     gap: 8px;
   }
 
@@ -1546,6 +1587,29 @@ h1, h2, h3, h4, h5, h6 {
     padding: 6px 8px;
     font-size: 0.8rem;
   }
+
+  .pricing-card {
+    padding: 24px 20px;
+  }
+
+  .paywall-title {
+    font-size: 1.6rem;
+  }
+
+  .plan-price-large {
+    font-size: 2.2rem;
+  }
+
+  .logout-bar {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .invoice-print-header {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
 }
 
 /* View header responsive */
@@ -1553,7 +1617,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 12px;
 }
@@ -1567,7 +1631,10 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 640px) {
   .view-header {
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+  }
+  .view-header h2 {
+    font-size: 1.3rem;
   }
   .view-header-actions {
     width: 100%;
@@ -1575,8 +1642,8 @@ h1, h2, h3, h4, h5, h6 {
   .view-header-actions .btn {
     flex: 1;
     min-width: 0;
-    font-size: 0.8rem;
-    padding: 8px 10px;
+    font-size: 0.78rem;
+    padding: 7px 8px;
   }
 }
 

@@ -47,14 +47,14 @@ const Dashboard = ({
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+      <div className="view-header">
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Business Dashboard</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Real-time overview of Vyapora</p>
         </div>
         
         {/* Quick Action buttons */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div className="view-header-actions">
           <button className="btn btn-primary btn-sm" onClick={openInvoiceModal}>
             <FilePlus2 size={16} /> Invoice
           </button>
