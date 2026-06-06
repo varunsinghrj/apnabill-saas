@@ -21,7 +21,8 @@ const PORT = process.env.PORT || 3001;
 // ─── Middleware ──────────────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
   'http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173',
-  'https://apnabill.netlify.app', 'https://apnabill-frontend.netlify.app'
+  'https://apnabill.netlify.app', 'https://apnabill-frontend.netlify.app',
+  'https://apnabill-saas.onrender.com'
 ];
 
 app.use(cors({
