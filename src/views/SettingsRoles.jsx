@@ -33,7 +33,7 @@ const SettingsRoles = ({ roles, addTeamMember, deleteTeamMember, toggleTeamMembe
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="view-header">
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>User Roles & Permissions</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Invite staff, assign store permissions, and oversee operator logs</p>

@@ -64,12 +64,12 @@ const Inventory = ({ products, deleteProduct, onOpenAddModal, onOpenEditModal })
   return (
     <div>
       {/* View Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="view-header">
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Inventory Catalog</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Manage products, batch details, and warehouse stocks</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div className="view-header-actions">
           <button className="btn btn-primary" onClick={onOpenAddModal}>
             <PackagePlus size={16} /> Add Product
           </button>
@@ -77,7 +77,7 @@ const Inventory = ({ products, deleteProduct, onOpenAddModal, onOpenEditModal })
       </div>
 
       {/* Mini Stats Grid */}
-      <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: '24px' }}>
+      <div className="kpi-grid responsive-grid-4" style={{ marginBottom: '24px' }}>
         <div className="kpi-card" style={{ padding: '16px' }}>
           <div className="kpi-left">
             <span className="kpi-title" style={{ fontSize: '0.75rem' }}>Total unique items</span>
@@ -107,7 +107,7 @@ const Inventory = ({ products, deleteProduct, onOpenAddModal, onOpenEditModal })
       {/* Product Table Control Headers */}
       <div className="table-container">
         <div className="table-header-controls">
-          <div style={{ position: 'relative', width: '280px' }}>
+          <div className="table-search-input" style={{ position: 'relative' }}>
             <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
             <input 
               type="text" 

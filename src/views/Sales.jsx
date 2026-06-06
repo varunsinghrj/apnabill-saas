@@ -92,7 +92,7 @@ const Sales = ({
           </div>
 
           {/* Customer and Business Billing Info */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', marginBottom: '32px' }}>
+          <div className="responsive-grid-2" style={{ marginBottom: '32px' }}>
             <div>
               <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 600 }}>Billed To:</span>
               <h4 style={{ fontSize: '1.05rem', margin: '4px 0 6px 0', color: '#0f172a' }}>{selectedInvoice.customerName}</h4>
@@ -153,7 +153,7 @@ const Sales = ({
           </table>
 
           {/* Invoice Summary and Tax Analysis */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '40px' }}>
+          <div className="responsive-grid-2" style={{ gap: '40px' }}>
             {/* Tax Details Table */}
             <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', height: 'fit-content' }}>
               <h5 style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#1e293b' }}>GST HSN Breakdown Summary</h5>
@@ -246,12 +246,12 @@ const Sales = ({
   return (
     <div>
       {/* View Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="view-header">
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Sales Invoices & Billing</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Record sales transactions, trace payments, and print tax receipts</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div className="view-header-actions">
           <button className="btn btn-success" onClick={() => setIsPayOpen(true)}>
             <CreditCard size={16} /> Record Payment
           </button>
@@ -262,7 +262,7 @@ const Sales = ({
       </div>
 
       {/* Mini Stats Card */}
-      <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '24px' }}>
+      <div className="kpi-grid responsive-grid-3" style={{ marginBottom: '24px' }}>
         <div className="kpi-card" style={{ padding: '16px' }}>
           <div className="kpi-left">
             <span className="kpi-title" style={{ fontSize: '0.75rem' }}>Total Sales Invoiced</span>
@@ -286,7 +286,7 @@ const Sales = ({
       {/* Control Header */}
       <div className="table-container">
         <div className="table-header-controls">
-          <div style={{ position: 'relative', width: '280px' }}>
+          <div className="table-search-input" style={{ position: 'relative' }}>
             <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
             <input 
               type="text" 

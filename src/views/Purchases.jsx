@@ -45,12 +45,12 @@ const Purchases = ({
   return (
     <div>
       {/* View Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="view-header">
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Purchases & Goods Inward</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Record purchases from wholesalers, monitor invoices, and manage payment credits</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div className="view-header-actions">
           <button className="btn btn-success" onClick={() => setIsPayOpen(true)}>
             <IndianRupee size={16} /> Pay Supplier
           </button>
@@ -61,7 +61,7 @@ const Purchases = ({
       </div>
 
       {/* Mini Stats Card */}
-      <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', marginBottom: '24px' }}>
+      <div className="kpi-grid" style={{ marginBottom: '24px' }}>
         <div className="kpi-card" style={{ padding: '16px' }}>
           <div className="kpi-left">
             <span className="kpi-title" style={{ fontSize: '0.75rem' }}>Total Purchase Orders</span>
@@ -79,7 +79,7 @@ const Purchases = ({
       {/* Table grid control */}
       <div className="table-container">
         <div className="table-header-controls">
-          <div style={{ position: 'relative', width: '280px' }}>
+          <div className="table-search-input" style={{ position: 'relative' }}>
             <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
             <input 
               type="text" 

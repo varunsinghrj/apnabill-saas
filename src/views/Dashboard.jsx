@@ -192,7 +192,7 @@ const Dashboard = ({
       </div>
 
       {/* Bottom Row: Recent Sales & Top Products */}
-      <div className="dashboard-bottom-row" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px', marginTop: '24px' }}>
+      <div className="responsive-grid-2" style={{ marginTop: '24px', gap: '24px' }}>
         
         {/* Recent Invoices Log */}
         <div className="card">

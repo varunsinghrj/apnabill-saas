@@ -93,7 +93,7 @@ const SettingsBilling = ({ subscription, updateSubscriptionPlan }) => {
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="view-header">
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Subscription & Billing</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Choose plans, review payment logs, and check package limits</p>

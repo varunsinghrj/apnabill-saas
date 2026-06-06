@@ -12,7 +12,7 @@ const Customers = ({ customers, deleteCustomer, onOpenAddModal, onOpenEditModal 
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="view-header">
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Customers Directory</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Maintain client relationships, trace outstanding balances, and check billing details</p>
@@ -24,7 +24,7 @@ const Customers = ({ customers, deleteCustomer, onOpenAddModal, onOpenEditModal 
 
       <div className="table-container">
         <div className="table-header-controls">
-          <div style={{ position: 'relative', width: '280px' }}>
+          <div className="table-search-input" style={{ position: 'relative' }}>
             <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
             <input 
               type="text" 

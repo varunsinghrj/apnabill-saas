@@ -27,9 +27,11 @@ const SettingsGST = ({ settings, setSettings }) => {
 
   return (
     <div style={{ maxWidth: '800px' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>GST & Business Profile</h2>
-        <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Configure Indian taxation parameters, business filing schemes, and invoice headers</p>
+      <div className="view-header">
+        <div>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>GST & Business Profile</h2>
+          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Configure Indian taxation parameters, business filing schemes, and invoice headers</p>
+        </div>
       </div>
 
       {message && (

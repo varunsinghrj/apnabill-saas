@@ -99,7 +99,12 @@ export const useApiStore = () => {
   const [invoices, setInvoices] = useState([]);
   const [purchases, setPurchases] = useState([]);
   const [settings, setSettingsState] = useState({ businessName: '', gstin: '', gstType: 'Regular', contactNo: '', email: '', address: '', currency: 'INR', financialYearStart: '' });
-  const [subscription, setSubscription] = useState({ plan: 'Free Trial', status: 'Active', price: 0, expiryDate: '', trialEnds: '', usersAllowed: 1, featuresUnlocked: { advancedReports: false, multiWarehouse: false, aiAssistant: true, multiUser: false } });
+  const [subscription, setSubscription] = useState(() => {
+    try {
+      const stored = localStorage.getItem('vyapora_subscription');
+      return stored ? JSON.parse(stored) : { plan: 'Free Trial', status: 'Active', price: 0, expiryDate: '', trialEnds: '', usersAllowed: 1, featuresUnlocked: { advancedReports: false, multiWarehouse: false, aiAssistant: true, multiUser: false } };
+    } catch { return { plan: 'Free Trial', status: 'Active', price: 0, expiryDate: '', trialEnds: '', usersAllowed: 1, featuresUnlocked: { advancedReports: false, multiWarehouse: false, aiAssistant: true, multiUser: false } }; }
+  });
   const [roles, setRoles] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -109,6 +114,11 @@ export const useApiStore = () => {
   useEffect(() => {
     localStorage.setItem('vyapora_user', JSON.stringify(user));
   }, [user]);
+
+  // Persist subscription to localStorage
+  useEffect(() => {
+    localStorage.setItem('vyapora_subscription', JSON.stringify(subscription));
+  }, [subscription]);
 
   // Generate notifications whenever products/invoices change
   useEffect(() => {
@@ -137,7 +147,23 @@ export const useApiStore = () => {
       setInvoices(invs);
       setPurchases(pos);
       setSettingsState(sett);
-      setSubscription(sub);
+      
+      // If backend subscription is None/Pending but localStorage has an Active plan, keep localStorage
+      if (sub && (sub.plan === 'None' || sub.status !== 'Active')) {
+        try {
+          const cached = JSON.parse(localStorage.getItem('vyapora_subscription'));
+          if (cached && cached.plan !== 'None' && cached.status === 'Active') {
+            // Backend lost data (Render spin-down), restore from cache
+            setSubscription(cached);
+          } else {
+            setSubscription(sub);
+          }
+        } catch {
+          setSubscription(sub);
+        }
+      } else {
+        setSubscription(sub);
+      }
       setRoles(rls);
     } catch (err) {
       console.error('Failed to load data:', err);
@@ -177,6 +203,7 @@ export const useApiStore = () => {
   const logoutUser = () => {
     localStorage.removeItem('vyapora_token');
     localStorage.removeItem('vyapora_user');
+    localStorage.removeItem('vyapora_subscription');
     setUser({ loggedIn: false, name: '', email: '', businessName: '' });
     setProducts([]); setCustomers([]); setSuppliers([]); setInvoices([]); setPurchases([]); setRoles([]);
     setSettingsState({ businessName: '', gstin: '', gstType: 'Regular', contactNo: '', email: '', address: '', currency: 'INR', financialYearStart: '' });

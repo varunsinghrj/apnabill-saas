@@ -1548,6 +1548,120 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* View header responsive */
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.view-header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .view-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .view-header-actions {
+    width: 100%;
+  }
+  .view-header-actions .btn {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.8rem;
+    padding: 8px 10px;
+  }
+}
+
+/* Table search responsive */
+.table-search-input {
+  width: 280px;
+}
+
+@media (max-width: 640px) {
+  .table-search-input {
+    width: 100%;
+  }
+}
+
+/* Invoice print view responsive */
+@media (max-width: 768px) {
+  .invoice-print-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .invoice-print-header {
+    flex-direction: column !important;
+    gap: 16px;
+  }
+  .invoice-print-header > div:last-child {
+    text-align: left !important;
+    align-items: flex-start !important;
+  }
+}
+
+/* Mobile sidebar backdrop */
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 99;
+}
+
+/* Responsive inline grids in views */
+.responsive-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 768px) {
+  .responsive-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.responsive-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .responsive-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .responsive-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.responsive-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+@media (max-width: 900px) {
+  .responsive-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .responsive-grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Print CSS */
 @media print {
   body * {

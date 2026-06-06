@@ -24,7 +24,7 @@ const Reports = ({ products, invoices, purchases }) => {
   return (
     <div>
       {/* View Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="view-header">
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Reports & Financials</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Generate GST tax statements, audit stock assets, and trace business margins</p>
@@ -60,7 +60,7 @@ const Reports = ({ products, invoices, purchases }) => {
       {activeReportTab === 'stock-val' && (
         <div>
           {/* Summary Cards */}
-          <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '24px' }}>
+          <div className="kpi-grid responsive-grid-3" style={{ marginBottom: '24px' }}>
             <div className="kpi-card">
               <div className="kpi-left">
                 <span className="kpi-title" style={{ fontSize: '0.75rem' }}>Total Asset Cost</span>
@@ -132,7 +132,7 @@ const Reports = ({ products, invoices, purchases }) => {
       {activeReportTab === 'gst-ledger' && (
         <div>
           {/* Summary Cards */}
-          <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '24px' }}>
+          <div className="kpi-grid responsive-grid-3" style={{ marginBottom: '24px' }}>
             <div className="kpi-card">
               <div className="kpi-left">
                 <span className="kpi-title" style={{ fontSize: '0.75rem' }}>Output Tax Collected (Sales)</span>
@@ -160,7 +160,7 @@ const Reports = ({ products, invoices, purchases }) => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <div className="responsive-grid-2" style={{ gap: '24px' }}>
             {/* GSTR-1 Sales Breakdown */}
             <div className="table-container">
               <div className="table-header-controls">
