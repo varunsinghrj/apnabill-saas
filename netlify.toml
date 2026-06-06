@@ -5,7 +5,7 @@
 # Proxy API calls to our hosted backend server on Render
 [[redirects]]
   from = "/api/*"
-  to = "https://apnabill-backend.onrender.com/api/:splat"
+  to = "https://apnabill-saas.onrender.com/api/:splat"
   status = 200
   force = true
 
