@@ -11,7 +11,7 @@ const AIAssistant = ({
   const [messages, setMessages] = useState([
     {
       sender: 'ai',
-      text: 'Namaste! I am your ApnaBill AI Assistant. I can analyze your inventory, track customer dues, calculate tax liabilities, and suggest reorders. Ask me anything, or pick a question below.',
+      text: 'Namaste! I am your Vyapora AI Assistant. I can analyze your inventory, track customer dues, calculate tax liabilities, and suggest reorders. Ask me anything, or pick a question below.',
       type: 'text'
     }
   ]);
@@ -267,7 +267,7 @@ const AIAssistant = ({
                 <div className="chat-bubble">
                   {msg.sender === 'ai' && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#2563eb', fontWeight: 600, fontSize: '0.8rem', marginBottom: '6px' }}>
-                      <Sparkles size={14} /> ApnaBill Copilot
+                      <Sparkles size={14} /> Vyapora Copilot
                     </div>
                   )}
                   

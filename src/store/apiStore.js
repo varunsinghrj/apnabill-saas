@@ -7,7 +7,7 @@ const API_BASE = '/api';
 
 // ─── HTTP Helper ─────────────────────────────────────────────────────────────
 async function apiFetch(path, options = {}) {
-  const token = localStorage.getItem('apnabill_token');
+  const token = localStorage.getItem('vyapora_token');
   const headers = { 'Content-Type': 'application/json', ...options.headers };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -88,7 +88,7 @@ export const useApiStore = () => {
   // Auth state — load from localStorage on init
   const [user, setUser] = useState(() => {
     try {
-      const stored = localStorage.getItem('apnabill_user');
+      const stored = localStorage.getItem('vyapora_user');
       return stored ? JSON.parse(stored) : { loggedIn: false, name: '', email: '', businessName: '' };
     } catch { return { loggedIn: false, name: '', email: '', businessName: '' }; }
   });
@@ -107,7 +107,7 @@ export const useApiStore = () => {
 
   // Persist user to localStorage
   useEffect(() => {
-    localStorage.setItem('apnabill_user', JSON.stringify(user));
+    localStorage.setItem('vyapora_user', JSON.stringify(user));
   }, [user]);
 
   // Generate notifications whenever products/invoices change
@@ -154,14 +154,14 @@ export const useApiStore = () => {
   // ─── Auth Actions ────────────────────────────────────────────────────────────
   const loginUser = async (email, password) => {
     const data = await apiFetch('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
-    localStorage.setItem('apnabill_token', data.token);
+    localStorage.setItem('vyapora_token', data.token);
     setUser(data.user);
     return data.user;
   };
 
   const registerUser = async (name, email, password, businessName) => {
     const data = await apiFetch('/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password, businessName }) });
-    localStorage.setItem('apnabill_token', data.token);
+    localStorage.setItem('vyapora_token', data.token);
     setUser(data.user);
     return data.user;
   };
@@ -175,8 +175,8 @@ export const useApiStore = () => {
   };
 
   const logoutUser = () => {
-    localStorage.removeItem('apnabill_token');
-    localStorage.removeItem('apnabill_user');
+    localStorage.removeItem('vyapora_token');
+    localStorage.removeItem('vyapora_user');
     setUser({ loggedIn: false, name: '', email: '', businessName: '' });
     setProducts([]); setCustomers([]); setSuppliers([]); setInvoices([]); setPurchases([]); setRoles([]);
     setSettingsState({ businessName: '', gstin: '', gstType: 'Regular', contactNo: '', email: '', address: '', currency: 'INR', financialYearStart: '' });

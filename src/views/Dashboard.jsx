@@ -47,22 +47,22 @@ const Dashboard = ({
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Business Dashboard</h2>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Real-time overview of Apna Bazaar Wholesalers</p>
+          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Real-time overview of Vyapora</p>
         </div>
         
         {/* Quick Action buttons */}
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button className="btn btn-primary" onClick={openInvoiceModal}>
-            <FilePlus2 size={16} /> Create Invoice
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <button className="btn btn-primary btn-sm" onClick={openInvoiceModal}>
+            <FilePlus2 size={16} /> Invoice
           </button>
-          <button className="btn btn-success" onClick={openPurchaseModal}>
-            <PlusSquare size={16} /> Receive Purchase
+          <button className="btn btn-success btn-sm" onClick={openPurchaseModal}>
+            <PlusSquare size={16} /> Purchase
           </button>
-          <button className="btn btn-secondary" onClick={openProductModal}>
-            <PlusCircle size={16} /> Add Product
+          <button className="btn btn-secondary btn-sm" onClick={openProductModal}>
+            <PlusCircle size={16} /> Product
           </button>
         </div>
       </div>
@@ -192,7 +192,7 @@ const Dashboard = ({
       </div>
 
       {/* Bottom Row: Recent Sales & Top Products */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px', marginTop: '24px' }}>
+      <div className="dashboard-bottom-row" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px', marginTop: '24px' }}>
         
         {/* Recent Invoices Log */}
         <div className="card">

@@ -1,7 +1,7 @@
 {
-  "name": "apnabill-backend",
+  "name": "vyapora-backend",
   "version": "1.0.0",
-  "description": "ApnaBill SaaS Backend API",
+  "description": "Vyapora SaaS Backend API",
   "main": "server.js",
   "type": "commonjs",
   "engines": {

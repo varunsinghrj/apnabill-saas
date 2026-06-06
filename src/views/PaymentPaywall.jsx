@@ -115,7 +115,7 @@ const PaymentPaywall = ({ updateSubscriptionPlan, logoutUser }) => {
             <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #2563eb, #3b82f6)', borderRadius: '8px', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
               AB
             </div>
-            <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>ApnaBill SaaS</span>
+            <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Vyapora SaaS</span>
           </div>
           <button 
             onClick={logoutUser}
@@ -130,7 +130,7 @@ const PaymentPaywall = ({ updateSubscriptionPlan, logoutUser }) => {
             <Info size={14} />
             <span>Active Plan Required</span>
           </div>
-          <h1 className="paywall-title">Choose your ApnaBill SaaS Plan</h1>
+          <h1 className="paywall-title">Choose your Vyapora SaaS Plan</h1>
           <p className="paywall-subtitle">
             Your business account is registered. Please select one of our premium Indian wholesale billing packages below to unlock ledger management, GST formatting, and AI analytics.
           </p>
@@ -209,7 +209,7 @@ const PaymentPaywall = ({ updateSubscriptionPlan, logoutUser }) => {
             <div className="modal-content" style={{ width: '100%', maxWidth: '520px', background: '#fff', borderRadius: '16px', padding: '24px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', border: '1px solid #e2e8f0' }}>
               
               <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9', paddingBottom: '14px', marginBottom: '18px' }}>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>Secure ApnaBill Checkout</h3>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>Secure Vyapora Checkout</h3>
                 <button className="icon-btn" onClick={() => setSelectedPlanToBuy(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#64748b' }}>
                   <X size={20} />
                 </button>
@@ -239,7 +239,7 @@ const PaymentPaywall = ({ updateSubscriptionPlan, logoutUser }) => {
                     <input 
                       type="text" 
                       className="form-control" 
-                      placeholder="e.g. Varun Gupta" 
+                      placeholder="e.g. Varun Singh" 
                       value={cardName}
                       onChange={(e) => setCardName(e.target.value)}
                       required
@@ -319,7 +319,7 @@ const PaymentPaywall = ({ updateSubscriptionPlan, logoutUser }) => {
                   </div>
                   <h3 style={{ color: '#0f172a', fontSize: '1.25rem', fontWeight: 700 }}>Payment Received!</h3>
                   <p style={{ color: '#475569', fontSize: '0.8rem', marginTop: '8px', lineHeight: '1.5' }}>
-                    Thank you! Your ApnaBill account has been upgraded to **{selectedPlanToBuy.name}**.<br />
+                    Thank you! Your Vyapora account has been upgraded to **{selectedPlanToBuy.name}**.<br />
                     Enjoy full access to billing, invoicing, and team settings.
                   </p>
                   <button 

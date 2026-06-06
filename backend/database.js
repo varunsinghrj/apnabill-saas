@@ -35,7 +35,7 @@ function seedDemoData(userId) {
       id: uuidv4(), user_id: userId,
       business_name: 'Apna Bazaar Wholesalers',
       gstin: '09AAAAA1111A1Z1', gst_type: 'Regular',
-      contact_no: '9999888877', email: 'admin@apnabazaar.co.in',
+      contact_no: '9999888877', email: 'admin@vyapora.co.in',
       address: 'Shop No. 14, Main Market, Sector 62, Noida, UP - 201301',
       currency: 'INR', financial_year_start: '2026-04-01'
     }).write();
@@ -43,7 +43,7 @@ function seedDemoData(userId) {
     db.get('settings').find({ user_id: userId }).assign({
       business_name: 'Apna Bazaar Wholesalers',
       gstin: '09AAAAA1111A1Z1', gst_type: 'Regular',
-      contact_no: '9999888877', email: 'admin@apnabazaar.co.in',
+      contact_no: '9999888877', email: 'admin@vyapora.co.in',
       address: 'Shop No. 14, Main Market, Sector 62, Noida, UP - 201301',
       currency: 'INR', financial_year_start: '2026-04-01'
     }).write();
@@ -100,8 +100,8 @@ function seedDemoData(userId) {
 
   // Roles
   db.get('roles').remove({ user_id: userId }).write();
-  db.get('roles').push({ id: 'r1', user_id: userId, name: 'Amit Kumar', email: 'amit@apnabazaar.co.in', role: 'Inventory Manager', active: true, created_at: now }).write();
-  db.get('roles').push({ id: 'r2', user_id: userId, name: 'Ritu Sharma', email: 'ritu@apnabazaar.co.in', role: 'Billing Operator', active: true, created_at: now }).write();
+  db.get('roles').push({ id: 'r1', user_id: userId, name: 'Amit Kumar', email: 'amit@vyapora.co.in', role: 'Inventory Manager', active: true, created_at: now }).write();
+  db.get('roles').push({ id: 'r2', user_id: userId, name: 'Ritu Sharma', email: 'ritu@vyapora.co.in', role: 'Billing Operator', active: true, created_at: now }).write();
 
   // Invoices & items
   db.get('invoices').remove({ user_id: userId }).write();

@@ -230,7 +230,7 @@ const Sales = ({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '64px', borderTop: '1px solid #e2e8f0', paddingTop: '24px' }}>
             <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
               Thank you for your business!<br />
-              Generated electronically via <strong>ApnaBill SaaS platform</strong>
+              Generated electronically via <strong>Vyapora SaaS platform</strong>
             </div>
             <div style={{ textAlign: 'center', width: '200px' }}>
               <div style={{ borderBottom: '1px solid #94a3b8', height: '40px' }}></div>

@@ -122,7 +122,7 @@ const DEMO_BUSINESS_SETTINGS = {
   gstin: '09AAAAA1111A1Z1',
   gstType: 'Regular',
   contactNo: '9999888877',
-  email: 'admin@apnabazaar.co.in',
+  email: 'admin@vyapora.co.in',
   address: 'Shop No. 14, Main Market, Sector 62, Noida, UP - 201301',
   currency: 'INR',
   financialYearStart: '2026-04-01'
@@ -144,8 +144,8 @@ const DEMO_SUBSCRIPTION = {
 };
 
 const DEMO_ROLES = [
-  { id: 'r1', name: 'Amit Kumar', email: 'amit@apnabazaar.co.in', role: 'Inventory Manager', active: true },
-  { id: 'r2', name: 'Ritu Sharma', email: 'ritu@apnabazaar.co.in', role: 'Billing Operator', active: true }
+  { id: 'r1', name: 'Amit Kumar', email: 'amit@vyapora.co.in', role: 'Inventory Manager', active: true },
+  { id: 'r2', name: 'Ritu Sharma', email: 'ritu@vyapora.co.in', role: 'Billing Operator', active: true }
 ];
 
 // Clean Slate Initial Configs (All arrays are empty. Onboarding initiates login)
@@ -527,7 +527,7 @@ export const useMockStore = () => {
 
   // Logout/Login simulation
   const loginUser = (email, business) => {
-    setUser({ loggedIn: true, name: 'Varun Gupta', email, businessName: business });
+    setUser({ loggedIn: true, name: 'Varun Singh', email, businessName: business });
   };
 
   const logoutUser = () => {
@@ -544,7 +544,7 @@ export const useMockStore = () => {
     setSettings(DEMO_BUSINESS_SETTINGS);
     setSubscription(DEMO_SUBSCRIPTION);
     setRoles(DEMO_ROLES);
-    setUser({ loggedIn: true, name: 'Varun Gupta', email: 'admin@apnabazaar.co.in', businessName: 'Apna Bazaar Wholesalers' });
+    setUser({ loggedIn: true, name: 'Varun Singh', email: 'admin@vyapora.co.in', businessName: 'Apna Bazaar Wholesalers' });
   };
 
   // Purge Action

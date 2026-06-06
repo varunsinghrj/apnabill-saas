@@ -31,8 +31,8 @@ const Sidebar = ({ activeView, setActiveView, isCollapsed, isMobileOpen, user, h
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''} ${isMobileOpen ? 'open' : ''}`}>
       <div className="sidebar-brand">
-        <div className="brand-logo">AB</div>
-        <span className="brand-name">ApnaBill SaaS</span>
+        <div className="brand-logo">V</div>
+        <span className="brand-name">Vyapora</span>
       </div>
 
       <nav className="sidebar-nav">

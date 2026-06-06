@@ -363,7 +363,7 @@ const InvoiceModal = ({ isOpen, onClose, onSubmit, products, customers }) => {
                     <div style={{ fontSize: '0.75rem', color: '#1e3a8a' }}>
                       <strong>Business UPI QR Code Active</strong><br />
                       Let customer scan to pay ₹{grandTotal.toLocaleString('en-IN')}<br />
-                      <span style={{ color: '#2563eb', fontWeight: 600 }}>upi://pay?pa=apnabazaar@okaxis&am={grandTotal}</span>
+                      <span style={{ color: '#2563eb', fontWeight: 600 }}>upi://pay?pa=vyapora@okaxis&am={grandTotal}</span>
                     </div>
                   </div>
                 )}

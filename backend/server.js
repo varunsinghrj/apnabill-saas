@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 
 // ─── Health Check ────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', service: 'ApnaBill API', version: '1.0.0', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', service: 'Vyapora API', version: '1.0.0', timestamp: new Date().toISOString() });
 });
 
 // ─── Mount Routes ────────────────────────────────────────────────────────────
@@ -75,7 +75,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log('');
   console.log('  ╔══════════════════════════════════════════╗');
-  console.log('  ║   ApnaBill SaaS Backend API              ║');
+  console.log('  ║   Vyapora SaaS Backend API              ║');
   console.log(`  ║   Running on  http://localhost:${PORT}      ║`);
   console.log('  ║   Database    lowdb (apnabill.db.json)   ║');
   console.log('  ╚══════════════════════════════════════════╝');

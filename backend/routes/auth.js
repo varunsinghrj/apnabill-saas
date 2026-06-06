@@ -1,12 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { db, uuidv4, seedDemoData, formatSettings } = require('../database');
+const { db, uuidv4, formatSettings } = require('../database');
 const { authenticateToken } = require('../middleware/auth');
 
 require('dotenv').config();
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'apnabill_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'vyapora_secret';
 
 // POST /api/auth/register
 router.post('/register', (req, res) => {
@@ -74,17 +74,6 @@ router.post('/onboard', authenticateToken, (req, res) => {
   } catch (err) {
     console.error('Onboard error:', err);
     res.status(500).json({ error: 'Server error during onboarding' });
-  }
-});
-
-// POST /api/auth/demo — Load demo data for logged-in user
-router.post('/demo', authenticateToken, (req, res) => {
-  try {
-    seedDemoData(req.user.id);
-    res.json({ success: true, message: 'Demo data loaded successfully' });
-  } catch (err) {
-    console.error('Demo seed error:', err);
-    res.status(500).json({ error: 'Failed to load demo data' });
   }
 });
 

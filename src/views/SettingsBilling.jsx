@@ -218,7 +218,7 @@ const SettingsBilling = ({ subscription, updateSubscriptionPlan }) => {
                     <input 
                       type="text" 
                       className="form-control" 
-                      placeholder="e.g. Varun Gupta" 
+                      placeholder="e.g. Varun Singh" 
                       value={cardName}
                       onChange={(e) => setCardName(e.target.value)}
                       required

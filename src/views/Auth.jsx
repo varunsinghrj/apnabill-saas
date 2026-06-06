@@ -97,14 +97,14 @@ const Auth = ({ loginUser, registerUser, onboardUser, setActiveView, setSettings
     try {
       // Step 1: Try login first
       try {
-        await loginUser('admin@apnabazaar.co.in', 'demo1234');
+        await loginUser('admin@vyapora.co.in', 'demo1234');
       } catch {
         // Step 2: If login fails, register (ignore 409 = already exists)
         try {
-          await registerUser('Varun Gupta', 'admin@apnabazaar.co.in', 'demo1234', 'Apna Bazaar Wholesalers');
+          await registerUser('Varun Singh', 'admin@vyapora.co.in', 'demo1234', 'Apna Bazaar Wholesalers');
         } catch {
           // Account may already exist, try login again
-          await loginUser('admin@apnabazaar.co.in', 'demo1234');
+          await loginUser('admin@vyapora.co.in', 'demo1234');
         }
         // Step 3: Onboard business settings
         if (onboardUser) {
@@ -113,7 +113,7 @@ const Auth = ({ loginUser, registerUser, onboardUser, setActiveView, setSettings
             gstin: '09AAAAA1111A1Z1',
             gstType: 'Regular',
             contactNo: '9999888877',
-            email: 'admin@apnabazaar.co.in',
+            email: 'admin@vyapora.co.in',
             address: 'Shop No. 14, Main Market, Sector 62, Noida, UP - 201301',
             currency: 'INR',
             financialYearStart: '2026-04-01'
@@ -121,7 +121,7 @@ const Auth = ({ loginUser, registerUser, onboardUser, setActiveView, setSettings
         }
       }
       // Step 4: Load demo data
-      const token = localStorage.getItem('apnabill_token');
+      const token = localStorage.getItem('vyapora_token');
       if (token) {
         await fetch('/api/auth/demo', { method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } });
       }
@@ -158,7 +158,7 @@ const Auth = ({ loginUser, registerUser, onboardUser, setActiveView, setSettings
           {authMode === 'login' && (
             <div>
               <div className="auth-header">
-                <div className="auth-logo">AB</div>
+                <div className="auth-logo">V</div>
                 <h2 className="auth-title">Welcome Back</h2>
                 <p className="auth-subtitle">Log in to manage billing and inventory</p>
               </div>
@@ -177,7 +177,7 @@ const Auth = ({ loginUser, registerUser, onboardUser, setActiveView, setSettings
                     <Mail size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                     <input
                       type="email" className="form-control"
-                      placeholder="e.g. admin@apnabazaar.com"
+                      placeholder="e.g. admin@vyapora.com"
                       value={email} onChange={(e) => setEmail(e.target.value)}
                       style={{ paddingLeft: '36px' }} required
                     />
@@ -205,12 +205,6 @@ const Auth = ({ loginUser, registerUser, onboardUser, setActiveView, setSettings
                 </button>
               </form>
 
-              <div className="auth-divider">or</div>
-
-              <button className="demo-btn" onClick={handleDemoLogin} disabled={loading}>
-                {loading ? <><LoadingSpinner /> Loading Demo...</> : <><Sparkles size={16} /> Try with Demo Data</>}
-              </button>
-
               <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.85rem', color: '#64748b' }}>
                 Don't have a business account?{' '}
                 <span onClick={() => { setAuthMode('signup'); setError(''); }} style={{ color: '#2563eb', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>
@@ -224,9 +218,9 @@ const Auth = ({ loginUser, registerUser, onboardUser, setActiveView, setSettings
           {authMode === 'signup' && (
             <div>
               <div className="auth-header">
-                <div className="auth-logo">AB</div>
+                <div className="auth-logo">V</div>
                 <h2 className="auth-title">Create Account</h2>
-                <p className="auth-subtitle">Get started with ApnaBill SaaS today</p>
+                <p className="auth-subtitle">Get started with Vyapora SaaS today</p>
               </div>
 
               {error && (
@@ -243,7 +237,7 @@ const Auth = ({ loginUser, registerUser, onboardUser, setActiveView, setSettings
                     <User size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                     <input
                       type="text" className="form-control"
-                      placeholder="e.g. Varun Gupta"
+                      placeholder="e.g. Varun Singh"
                       value={name} onChange={(e) => setName(e.target.value)}
                       style={{ paddingLeft: '36px' }} required
                     />
