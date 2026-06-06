@@ -35,7 +35,7 @@ const SettingsRoles = ({ roles, addTeamMember, deleteTeamMember, toggleTeamMembe
     <div>
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>User Roles & Permissions</h2>
+          <h2>User Roles & Permissions</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Invite staff, assign store permissions, and oversee operator logs</p>
         </div>
         <button 
@@ -48,7 +48,7 @@ const SettingsRoles = ({ roles, addTeamMember, deleteTeamMember, toggleTeamMembe
       </div>
 
       {isLocked && (
-        <div style={{ display: 'flex', gap: '12px', background: '#fef2f2', border: '1px solid #fee2e2', color: '#b91c1c', padding: '16px', borderRadius: '12px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', gap: '12px', background: '#fef2f2', border: '1px solid #fee2e2', color: '#b91c1c', padding: '16px', borderRadius: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
           <AlertCircle size={20} style={{ flexShrink: 0, marginTop: '2px' }} />
           <div style={{ fontSize: '0.8rem', lineHeight: '1.5' }}>
             <strong>Plan Seat Limit Reached:</strong> You have active operators ({roles.length}) matching or exceeding your plan's team seat limit ({subscription.usersAllowed || 0}). Please upgrade your subscription plan to invite more staff members.

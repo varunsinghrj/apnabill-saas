@@ -66,7 +66,7 @@ const Inventory = ({ products, deleteProduct, onOpenAddModal, onOpenEditModal })
       {/* View Header */}
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Inventory Catalog</h2>
+          <h2>Inventory Catalog</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Manage products, batch details, and warehouse stocks</p>
         </div>
         <div className="view-header-actions">

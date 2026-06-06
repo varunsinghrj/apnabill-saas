@@ -95,7 +95,7 @@ const SettingsBilling = ({ subscription, updateSubscriptionPlan }) => {
     <div>
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Subscription & Billing</h2>
+          <h2>Subscription & Billing</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Choose plans, review payment logs, and check package limits</p>
         </div>
 
@@ -119,7 +119,7 @@ const SettingsBilling = ({ subscription, updateSubscriptionPlan }) => {
       </div>
 
       {/* Current Subscription Alert */}
-      <div className="card" style={{ background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', border: '1px solid #bfdbfe', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px' }}>
+      <div className="card" style={{ background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', border: '1px solid #bfdbfe', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
           <span className="badge badge-primary" style={{ marginBottom: '8px', fontWeight: 700 }}>CURRENT PLAN</span>
           <h3 style={{ fontSize: '1.4rem', color: '#1e3b8a' }}>{subscription.plan}</h3>
@@ -253,7 +253,7 @@ const SettingsBilling = ({ subscription, updateSubscriptionPlan }) => {
             )}
 
             {checkoutStep === 'processing' && (
-              <div className="modal-body" style={{ textAlign: 'center', padding: '48px 24px' }}>
+              <div className="modal-body" style={{ textAlign: 'center', padding: '32px 24px' }}>
                 <div style={{ width: '48px', height: '48px', border: '4px solid #bfdbfe', borderTopColor: '#2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 24px auto' }}></div>
                 <h4>Verifying Transaction...</h4>
                 <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '6px' }}>Communicating with simulated bank servers.</p>
@@ -261,7 +261,7 @@ const SettingsBilling = ({ subscription, updateSubscriptionPlan }) => {
             )}
 
             {checkoutStep === 'success' && (
-              <div className="modal-body" style={{ textAlign: 'center', padding: '40px 24px' }}>
+              <div className="modal-body" style={{ textAlign: 'center', padding: '28px 24px' }}>
                 <div style={{ width: '56px', height: '56px', background: '#ecfdf5', borderRadius: '50%', color: '#059669', display: 'flex', alignItems: 'center', justifyCentert: 'center', margin: '0 auto 20px auto', justifyContent: 'center' }}>
                   <Check size={32} />
                 </div>

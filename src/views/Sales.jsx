@@ -60,7 +60,7 @@ const Sales = ({
     return (
       <div className="print-invoice-area">
         {/* Back Button (no-print) */}
-        <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div className="no-print invoice-actions">
           <button className="btn btn-secondary" onClick={() => setSelectedInvoice(null)}>
             <ArrowLeft size={16} /> Back to Invoice History
           </button>
@@ -70,9 +70,9 @@ const Sales = ({
         </div>
 
         {/* Invoice template */}
-        <div style={{ background: 'white', padding: '40px', border: '1px solid #cbd5e1', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+        <div className="invoice-template" style={{ padding: '40px' }}>
           {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #e2e8f0', paddingBottom: '24px', marginBottom: '24px' }}>
+          <div className="invoice-header">
             <div>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a' }}>{settings.businessName}</h2>
               <div style={{ fontSize: '0.85rem', color: '#475569', marginTop: '4px' }}>
@@ -109,7 +109,7 @@ const Sales = ({
               </div>
             </div>
             <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
-              <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0', width: '260px' }}>
+              <div className="payment-summary" style={{ width: '260px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '6px' }}>
                   <span style={{ color: '#64748b' }}>Total Invoice:</span>
                   <strong style={{ color: '#0f172a' }}>₹{selectedInvoice.grandTotal.toFixed(2)}</strong>
@@ -127,6 +127,7 @@ const Sales = ({
           </div>
 
           {/* Invoice Items Table */}
+          <div className="invoice-items-responsive">
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', marginBottom: '32px' }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
@@ -151,9 +152,10 @@ const Sales = ({
               ))}
             </tbody>
           </table>
+          </div>
 
           {/* Invoice Summary and Tax Analysis */}
-          <div className="responsive-grid-2" style={{ gap: '40px' }}>
+          <div className="invoice-summary-responsive responsive-grid-2" style={{ gap: '40px' }}>
             {/* Tax Details Table */}
             <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', height: 'fit-content' }}>
               <h5 style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#1e293b' }}>GST HSN Breakdown Summary</h5>
@@ -227,13 +229,13 @@ const Sales = ({
           </div>
 
           {/* Footer Signature */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '64px', borderTop: '1px solid #e2e8f0', paddingTop: '24px' }}>
+          <div className="invoice-footer">
             <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
               Thank you for your business!<br />
               Generated electronically via <strong>Vyapora SaaS platform</strong>
             </div>
-            <div style={{ textAlign: 'center', width: '200px' }}>
-              <div style={{ borderBottom: '1px solid #94a3b8', height: '40px' }}></div>
+            <div className="signatory-box">
+              <div className="signatory-line"></div>
               <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: '6px', fontWeight: 600 }}>Authorized Signatory</div>
             </div>
           </div>
@@ -248,7 +250,7 @@ const Sales = ({
       {/* View Header */}
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Sales Invoices & Billing</h2>
+          <h2>Sales Invoices & Billing</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Record sales transactions, trace payments, and print tax receipts</p>
         </div>
         <div className="view-header-actions">

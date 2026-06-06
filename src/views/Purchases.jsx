@@ -47,7 +47,7 @@ const Purchases = ({
       {/* View Header */}
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Purchases & Goods Inward</h2>
+          <h2>Purchases & Goods Inward</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Record purchases from wholesalers, monitor invoices, and manage payment credits</p>
         </div>
         <div className="view-header-actions">

@@ -242,7 +242,7 @@ const AIAssistant = ({
       {/* View Header */}
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>AI Business Copilot</h2>
+          <h2>AI Business Copilot</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Conversational assistant to query sales ledger and inventory details</p>
         </div>
         <button 

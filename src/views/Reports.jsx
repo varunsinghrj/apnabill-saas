@@ -26,7 +26,7 @@ const Reports = ({ products, invoices, purchases }) => {
       {/* View Header */}
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Reports & Financials</h2>
+          <h2>Reports & Financials</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Generate GST tax statements, audit stock assets, and trace business margins</p>
         </div>
       </div>

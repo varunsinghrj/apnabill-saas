@@ -1612,6 +1612,99 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Invoice print area responsive */
+.print-invoice-area .invoice-template {
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.print-invoice-area .invoice-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+}
+
+.print-invoice-area .invoice-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.print-invoice-area .payment-summary {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.print-invoice-area .invoice-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 64px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 24px;
+}
+
+.print-invoice-area .signatory-box {
+  text-align: center;
+  width: 200px;
+}
+
+.print-invoice-area .signatory-line {
+  border-bottom: 1px solid #94a3b8;
+  height: 40px;
+}
+
+@media (max-width: 640px) {
+  .print-invoice-area .invoice-template {
+    padding: 16px;
+  }
+
+  .print-invoice-area .invoice-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .print-invoice-area .invoice-header > div:last-child {
+    text-align: left;
+  }
+
+  .print-invoice-area .payment-summary {
+    width: 100% !important;
+  }
+
+  .print-invoice-area .invoice-footer {
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+    margin-top: 32px;
+  }
+
+  .print-invoice-area .signatory-box {
+    width: 100%;
+  }
+
+  .print-invoice-area .invoice-items-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .print-invoice-area .invoice-items-responsive table {
+    min-width: 500px;
+  }
+
+  .print-invoice-area .invoice-summary-responsive {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+}
+
 /* View header responsive */
 .view-header {
   display: flex;
@@ -1620,6 +1713,11 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.view-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
 .view-header-actions {

@@ -49,7 +49,7 @@ const Dashboard = ({
     <div>
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Business Dashboard</h2>
+          <h2>Business Dashboard</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Real-time overview of Vyapora</p>
         </div>
         

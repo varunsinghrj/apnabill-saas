@@ -29,7 +29,7 @@ const SettingsGST = ({ settings, setSettings }) => {
     <div style={{ maxWidth: '800px' }}>
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>GST & Business Profile</h2>
+          <h2>GST & Business Profile</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Configure Indian taxation parameters, business filing schemes, and invoice headers</p>
         </div>
       </div>
@@ -118,7 +118,7 @@ const SettingsGST = ({ settings, setSettings }) => {
         </div>
 
         {formData.gstType === 'Composition' && (
-          <div style={{ display: 'flex', gap: '12px', background: '#fef3c7', border: '1px solid #f59e0b', color: '#b45309', padding: '16px', borderRadius: '8px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', gap: '12px', background: '#fef3c7', border: '1px solid #f59e0b', color: '#b45309', padding: '16px', borderRadius: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
             <ShieldCheck size={20} style={{ flexShrink: 0, marginTop: '2px' }} />
             <div style={{ fontSize: '0.8rem', lineHeight: '1.5' }}>
               <strong>Composition Scheme Notice:</strong> Under the composition scheme, you cannot collect GST from your customers, nor can you claim Input Tax Credit (ITC) on purchases. Your invoices will automatically label as <em>"Composition taxable person, not eligible to collect tax on supplies"</em>.

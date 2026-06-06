@@ -14,7 +14,7 @@ const Suppliers = ({ suppliers, deleteSupplier, onOpenAddModal, onOpenEditModal 
     <div>
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Suppliers Directory</h2>
+          <h2>Suppliers Directory</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Manage wholesale suppliers, trace purchases, and monitor outstanding payables</p>
         </div>
         <button className="btn btn-primary" onClick={onOpenAddModal}>

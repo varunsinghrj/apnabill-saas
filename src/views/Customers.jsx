@@ -14,7 +14,7 @@ const Customers = ({ customers, deleteCustomer, onOpenAddModal, onOpenEditModal 
     <div>
       <div className="view-header">
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Customers Directory</h2>
+          <h2>Customers Directory</h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Maintain client relationships, trace outstanding balances, and check billing details</p>
         </div>
         <button className="btn btn-primary" onClick={onOpenAddModal}>
