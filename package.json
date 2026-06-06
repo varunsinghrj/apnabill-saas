@@ -10,6 +10,7 @@
     "dev:frontend-only": "vite",
     "dev:backend-only": "npm --prefix backend run dev",
     "install:all": "npm install && npm --prefix backend install",
+    "postinstall": "npm install --prefix backend",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
