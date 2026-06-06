@@ -1,0 +1,16 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+# Proxy API calls to our hosted backend server on Render
+[[redirects]]
+  from = "/api/*"
+  to = "https://apnabill-backend.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# Fallback to index.html for React Router SPA routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
