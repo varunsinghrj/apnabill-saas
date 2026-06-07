@@ -93,6 +93,12 @@ const SettingsBilling = ({ subscription, updateSubscriptionPlan }) => {
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
     <div>
+      {/* Mobile View Header */}
+      <div className="mobile-view-header">
+        <h1>Subscription</h1>
+        <p>Choose plans, review payment logs, and check package limits</p>
+      </div>
+
       <div className="view-header">
         <div>
           <h2>Subscription & Billing</h2>

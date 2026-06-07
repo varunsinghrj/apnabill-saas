@@ -464,6 +464,61 @@ export const useMockStore = () => {
     });
   };
 
+  // Mark a specific invoice as fully paid
+  const markInvoicePaid = (invoiceNo) => {
+    setInvoices(prevInvs => prevInvs.map(inv => {
+      if (inv.invoiceNo === invoiceNo) {
+        const remaining = inv.grandTotal - inv.amountPaid;
+        setCustomers(prevCusts => prevCusts.map(c => {
+          if (c.id === inv.customerId) {
+            return { ...c, balance: Math.max(0, c.balance - remaining) };
+          }
+          return c;
+        }));
+        return { ...inv, amountPaid: inv.grandTotal, paymentStatus: 'Paid', paymentMode: 'Cash' };
+      }
+      return inv;
+    }));
+  };
+
+  // Change payment status of a specific invoice
+  const changePaymentStatus = (invoiceNo, newStatus, newAmountPaid, paymentMode) => {
+    const t = invoices.find(inv => inv.invoiceNo === invoiceNo);
+    if (!t) return;
+    const diff = newAmountPaid - t.amountPaid;
+
+    setCustomers(prev => prev.map(c =>
+      c.id === t.customerId ? { ...c, balance: Math.max(0, c.balance - diff) } : c
+    ));
+
+    setInvoices(prev => prev.map(inv =>
+      inv.invoiceNo === invoiceNo
+        ? { ...inv, amountPaid: newAmountPaid, paymentStatus: newStatus, paymentMode: paymentMode || inv.paymentMode }
+        : inv
+    ));
+  };
+
+  // Delete an invoice
+  const deleteInvoice = (invoiceNo) => {
+    const targetInv = invoices.find(inv => inv.invoiceNo === invoiceNo);
+    if (targetInv) {
+      // Restore product stock
+      setProducts(prev => prev.map(p => {
+        const item = targetInv.items.find(i => i.productId === p.id);
+        if (item) return { ...p, stock: p.stock + item.qty };
+        return p;
+      }));
+      // Restore customer balance
+      const unpaidAmt = targetInv.grandTotal - targetInv.amountPaid;
+      if (unpaidAmt > 0 && targetInv.customerId) {
+        setCustomers(prev => prev.map(c =>
+          c.id === targetInv.customerId ? { ...c, balance: Math.max(0, c.balance - unpaidAmt) } : c
+        ));
+      }
+    }
+    setInvoices(prev => prev.filter(inv => inv.invoiceNo !== invoiceNo));
+  };
+
   // Record a Supplier Payment Made
   const recordSupplierPayment = (supplierId, amount) => {
     setSuppliers(prev => prev.map(s => {
@@ -584,6 +639,9 @@ export const useMockStore = () => {
     addPurchaseOrder,
     recordCustomerPayment,
     recordSupplierPayment,
+    markInvoicePaid,
+    changePaymentStatus,
+    deleteInvoice,
     updateSubscriptionPlan,
     addTeamMember,
     deleteTeamMember,

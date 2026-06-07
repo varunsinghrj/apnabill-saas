@@ -289,6 +289,28 @@ export const useApiStore = () => {
     return newInv;
   };
 
+  const markInvoicePaid = async (invoiceNo) => {
+    await apiFetch(`/invoices/${invoiceNo}/mark-paid`, { method: 'POST' });
+    const [invs, custs] = await Promise.all([apiFetch('/invoices'), apiFetch('/customers')]);
+    setInvoices(invs);
+    setCustomers(custs);
+  };
+
+  const changePaymentStatus = async (invoiceNo, newStatus, amountPaid, paymentMode) => {
+    await apiFetch(`/invoices/${invoiceNo}`, { method: 'PUT', body: JSON.stringify({ paymentStatus: newStatus, amountPaid, paymentMode }) });
+    const [invs, custs] = await Promise.all([apiFetch('/invoices'), apiFetch('/customers')]);
+    setInvoices(invs);
+    setCustomers(custs);
+  };
+
+  const deleteInvoice = async (invoiceNo) => {
+    await apiFetch(`/invoices/${invoiceNo}`, { method: 'DELETE' });
+    const [invs, prods, custs] = await Promise.all([apiFetch('/invoices'), apiFetch('/products'), apiFetch('/customers')]);
+    setInvoices(invs);
+    setProducts(prods);
+    setCustomers(custs);
+  };
+
   // ─── Purchase Actions ─────────────────────────────────────────────────────────
   const addPurchaseOrder = async (poData) => {
     const newPO = await apiFetch('/purchases', { method: 'POST', body: JSON.stringify(poData) });
@@ -374,6 +396,9 @@ export const useApiStore = () => {
     recordSupplierPayment,
     // Invoices
     addInvoice,
+    markInvoicePaid,
+    changePaymentStatus,
+    deleteInvoice,
     // Purchases
     addPurchaseOrder,
     // Settings

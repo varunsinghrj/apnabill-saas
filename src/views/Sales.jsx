@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Search, Plus, Printer, FileText, ArrowLeft, CreditCard, X } from 'lucide-react';
+import { Search, Plus, Printer, FileText, ArrowLeft, CreditCard, X, CheckCircle, Trash2 } from 'lucide-react';
 
 const Sales = ({ 
   invoices, 
   customers, 
   recordCustomerPayment, 
+  changePaymentStatus,
+  deleteInvoice,
   onOpenInvoiceModal,
   settings 
 }) => {
@@ -12,13 +14,20 @@ const Sales = ({
   const [paymentFilter, setPaymentFilter] = useState('all');
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   
-  // Payment Modal Trigger state
   const [isPayOpen, setIsPayOpen] = useState(false);
   const [payCustId, setPayCustId] = useState('');
   const [payAmount, setPayAmount] = useState('');
   const [payMode, setPayMode] = useState('UPI');
 
-  // Mini Dashboard Calculations
+  const [isPartialPayOpen, setIsPartialPayOpen] = useState(false);
+  const [partialPayAmount, setPartialPayAmount] = useState('');
+  const [partialPayMode, setPartialPayMode] = useState('UPI');
+
+  const [isChangeStatusOpen, setIsChangeStatusOpen] = useState(false);
+  const [changeStatusValue, setChangeStatusValue] = useState('');
+  const [changeStatusAmount, setChangeStatusAmount] = useState('');
+  const [changeStatusMode, setChangeStatusMode] = useState('UPI');
+
   const totalInvoiced = invoices.reduce((acc, curr) => acc + curr.grandTotal, 0);
   const totalCollected = invoices.reduce((acc, curr) => acc + curr.amountPaid, 0);
   const pendingCollection = Math.max(0, totalInvoiced - totalCollected);
@@ -27,9 +36,7 @@ const Sales = ({
     const matchesSearch = 
       inv.invoiceNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
       inv.customerName.toLowerCase().includes(searchQuery.toLowerCase());
-
     const matchesStatus = paymentFilter === 'all' ? true : inv.paymentStatus === paymentFilter;
-
     return matchesSearch && matchesStatus;
   });
 
@@ -46,208 +53,446 @@ const Sales = ({
     setPayAmount('');
   };
 
-  const triggerPrint = () => {
-    window.print();
+  const handlePartialPay = () => {
+    const amount = Number(partialPayAmount);
+    const due = selectedInvoice.grandTotal - selectedInvoice.amountPaid;
+    if (!amount || amount <= 0 || amount > due) {
+      alert(`Enter amount between ₹1 and ₹${due.toLocaleString('en-IN')}`);
+      return;
+    }
+    recordCustomerPayment(selectedInvoice.customerId, amount, partialPayMode);
+    const updatedInv = { ...selectedInvoice, amountPaid: selectedInvoice.amountPaid + amount };
+    if (updatedInv.amountPaid >= updatedInv.grandTotal) updatedInv.paymentStatus = 'Paid';
+    else updatedInv.paymentStatus = 'Partially Paid';
+    setSelectedInvoice(updatedInv);
+    setIsPartialPayOpen(false);
+    setPartialPayAmount('');
+    alert(`Recorded ₹${amount.toLocaleString('en-IN')} payment!`);
   };
 
-  // Detailed Invoice View
+  const handleChangePaymentStatus = () => {
+    if (!changeStatusValue) {
+      alert('Please select a payment status.');
+      return;
+    }
+    let newAmountPaid = selectedInvoice.amountPaid;
+    if (changeStatusValue === 'Paid') {
+      newAmountPaid = selectedInvoice.grandTotal;
+    } else if (changeStatusValue === 'Unpaid') {
+      newAmountPaid = 0;
+    } else if (changeStatusValue === 'Partially Paid') {
+      const amt = Number(changeStatusAmount);
+      if (!amt || amt <= 0 || amt >= selectedInvoice.grandTotal) {
+        alert(`Enter amount between ₹1 and ₹${(selectedInvoice.grandTotal - 0.01).toLocaleString('en-IN')}`);
+        return;
+      }
+      newAmountPaid = amt;
+    }
+    changePaymentStatus(selectedInvoice.invoiceNo, changeStatusValue, newAmountPaid, changeStatusMode);
+    const updatedInv = { ...selectedInvoice, paymentStatus: changeStatusValue, amountPaid: newAmountPaid, paymentMode: changeStatusMode };
+    setSelectedInvoice(updatedInv);
+    setIsChangeStatusOpen(false);
+    setChangeStatusValue('');
+    setChangeStatusAmount('');
+    alert(`Payment status changed to "${changeStatusValue}"!`);
+  };
+
+  const triggerPrint = () => window.print();
+
+  // ─── DETAILED INVOICE VIEW ───
   if (selectedInvoice) {
     const isInterstate = selectedInvoice.customerId && 
       customers.find(c => c.id === selectedInvoice.customerId)?.state !== 'Uttar Pradesh';
-      
     const matchingCustomer = customers.find(c => c.id === selectedInvoice.customerId);
+    const outstanding = selectedInvoice.grandTotal - selectedInvoice.amountPaid;
 
     return (
       <div className="print-invoice-area">
-        {/* Back Button (no-print) */}
-        <div className="no-print invoice-actions">
-          <button className="btn btn-secondary" onClick={() => setSelectedInvoice(null)}>
-            <ArrowLeft size={16} /> Back to Invoice History
+        {/* Action buttons */}
+        <div className="no-print" style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+          <button className="btn btn-secondary" onClick={() => setSelectedInvoice(null)} style={{ flex: '1 1 auto' }}>
+            <ArrowLeft size={16} /> Back
           </button>
-          <button className="btn btn-primary" onClick={triggerPrint}>
-            <Printer size={16} /> Print/Save PDF
+          <button className="btn btn-primary" onClick={triggerPrint} style={{ flex: '1 1 auto' }}>
+            <Printer size={16} /> Print
+          </button>
+          <button className="btn btn-danger" onClick={() => { if (confirm(`Delete invoice ${selectedInvoice.invoiceNo}? This will restore stock and adjust customer balance.`)) { deleteInvoice(selectedInvoice.invoiceNo); setSelectedInvoice(null); } }} style={{ flex: '1 1 auto' }}>
+            <Trash2 size={16} /> Delete
           </button>
         </div>
 
-        {/* Invoice template */}
-        <div className="invoice-template" style={{ padding: '40px' }}>
-          {/* Header */}
-          <div className="invoice-header">
-            <div>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a' }}>{settings.businessName}</h2>
-              <div style={{ fontSize: '0.85rem', color: '#475569', marginTop: '4px' }}>
-                {settings.address}<br />
-                Phone: {settings.contactNo} | Email: {settings.email}<br />
-                <strong>GSTIN:</strong> {settings.gstin}
+        {/* Invoice card */}
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+          {/* Invoice header */}
+          <div style={{ background: 'linear-gradient(135deg, #1e3a8a, #2563eb)', color: 'white', padding: '20px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{settings.businessName || 'Vyapora'}</div>
+                <div style={{ fontSize: '0.75rem', opacity: 0.85, marginTop: 4, lineHeight: 1.5 }}>
+                  {settings.address && <>{settings.address}<br /></>}
+                  {settings.contactNo && <>Ph: {settings.contactNo}<br /></>}
+                  {settings.email && <>Email: {settings.email}<br /></>}
+                  <strong>GSTIN:</strong> {settings.gstin || 'Unregistered'}
+                </div>
               </div>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <span className="badge badge-success" style={{ padding: '6px 12px', fontSize: '0.8rem', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>TAX INVOICE</span>
-              <h3 style={{ fontSize: '1.25rem', marginTop: '12px', color: '#1e3a8a' }}>{selectedInvoice.invoiceNo}</h3>
-              <div style={{ fontSize: '0.85rem', color: '#475569' }}>
-                Date: <strong>{selectedInvoice.date}</strong><br />
-                Place of Supply: <strong>{matchingCustomer?.state || 'Uttar Pradesh'}</strong>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 10px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.5px' }}>TAX INVOICE</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: 700, marginTop: 8 }}>{selectedInvoice.invoiceNo}</div>
+                <div style={{ fontSize: '0.75rem', opacity: 0.85, marginTop: 2 }}>Date: {selectedInvoice.date}</div>
               </div>
             </div>
           </div>
 
-          {/* Customer and Business Billing Info */}
-          <div className="responsive-grid-2" style={{ marginBottom: '32px' }}>
-            <div>
-              <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 600 }}>Billed To:</span>
-              <h4 style={{ fontSize: '1.05rem', margin: '4px 0 6px 0', color: '#0f172a' }}>{selectedInvoice.customerName}</h4>
-              <div style={{ fontSize: '0.85rem', color: '#475569' }}>
-                {matchingCustomer ? (
-                  <>
-                    State: {matchingCustomer.state}<br />
-                    Phone: {matchingCustomer.phone}<br />
-                    GSTIN: {matchingCustomer.gstin || 'Consumer (Unregistered)'}
-                  </>
-                ) : (
-                  'Walk-in Retail Cash Client'
-                )}
-              </div>
+          {/* Status banner */}
+          {outstanding > 0 && (
+            <div style={{ background: '#fef2f2', borderBottom: '1px solid #fecaca', padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8rem', color: '#991b1b', fontWeight: 600 }}>Payment Pending</span>
+              <button className="btn btn-success btn-sm" onClick={() => { setChangeStatusValue(''); setIsChangeStatusOpen(true); }} style={{ fontSize: '0.75rem', padding: '4px 10px' }}>
+                Change Payment Status
+              </button>
             </div>
-            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
-              <div className="payment-summary" style={{ width: '260px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '6px' }}>
-                  <span style={{ color: '#64748b' }}>Total Invoice:</span>
-                  <strong style={{ color: '#0f172a' }}>₹{selectedInvoice.grandTotal.toFixed(2)}</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '6px' }}>
-                  <span style={{ color: '#64748b' }}>Amount Collected:</span>
-                  <strong style={{ color: '#059669' }}>₹{selectedInvoice.amountPaid.toFixed(2)}</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', borderTop: '1px solid #cbd5e1', paddingTop: '6px' }}>
-                  <span style={{ color: '#64748b' }}>Outstanding Dues:</span>
-                  <strong style={{ color: '#dc2626' }}>₹{(selectedInvoice.grandTotal - selectedInvoice.amountPaid).toFixed(2)}</strong>
-                </div>
-              </div>
+          )}
+          {outstanding <= 0 && (
+            <div style={{ background: '#f0fdf4', borderBottom: '1px solid #bbf7d0', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <CheckCircle size={16} style={{ color: '#16a34a' }} />
+              <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 600 }}>Fully Paid</span>
             </div>
-          </div>
+          )}
 
-          {/* Invoice Items Table */}
-          <div className="invoice-items-responsive">
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', marginBottom: '32px' }}>
-            <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
-                <th style={{ padding: '12px 16px', textAlign: 'center', width: '60px' }}>#</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left' }}>Item Description</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', width: '100px' }}>Rate (₹)</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', width: '80px' }}>Qty</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', width: '80px' }}>GST %</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', width: '120px' }}>Total (₹)</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div style={{ padding: '16px' }}>
+            {/* Billed To + Payment Summary */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+              <div>
+                <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 600, letterSpacing: '0.05em' }}>Billed To</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, marginTop: 4, color: '#0f172a' }}>{selectedInvoice.customerName}</div>
+                <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: 2, lineHeight: 1.5 }}>
+                  {matchingCustomer ? (
+                    <>
+                      {matchingCustomer.state && <>State: {matchingCustomer.state}<br /></>}
+                      {matchingCustomer.phone && <>Ph: {matchingCustomer.phone}<br /></>}
+                      {matchingCustomer.gstin && <>GSTIN: {matchingCustomer.gstin}</>}
+                    </>
+                  ) : 'Walk-in Cash Client'}
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 600 }}>Supply</div>
+                <div style={{ fontSize: '0.75rem', color: '#334155', marginTop: 4 }}>{matchingCustomer?.state || 'Uttar Pradesh'}</div>
+              </div>
+            </div>
+
+            {/* Payment breakdown */}
+            <div style={{ background: '#f8fafc', borderRadius: 8, padding: 12, marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: 6 }}>
+                <span style={{ color: '#64748b' }}>Total Invoice</span>
+                <strong>₹{selectedInvoice.grandTotal.toFixed(2)}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: 6 }}>
+                <span style={{ color: '#64748b' }}>Amount Collected</span>
+                <strong style={{ color: '#059669' }}>₹{selectedInvoice.amountPaid.toFixed(2)}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', borderTop: '1px solid #e2e8f0', paddingTop: 6 }}>
+                <span style={{ color: '#dc2626', fontWeight: 600 }}>Outstanding Dues</span>
+                <strong style={{ color: '#dc2626' }}>₹{outstanding.toFixed(2)}</strong>
+              </div>
+            </div>
+
+            {/* Items - mobile card layout */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', marginBottom: 8, letterSpacing: '0.05em' }}>Items ({selectedInvoice.items.length})</div>
               {selectedInvoice.items.map((item, index) => (
-                <tr key={index} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                  <td style={{ padding: '12px 16px', textAlign: 'center' }}>{index + 1}</td>
-                  <td style={{ padding: '12px 16px', fontWeight: 600 }}>{item.name}</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'right' }}>₹{item.price.toFixed(2)}</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center' }}>{item.qty}</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center' }}>{item.taxRate}%</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'right' }}>₹{item.total.toFixed(2)}</td>
-                </tr>
+                <div key={index} style={{ borderBottom: '1px solid #f1f5f9', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: 2 }}>₹{item.price.toFixed(2)} × {item.qty} + {item.taxRate}% GST</div>
+                  </div>
+                  <div style={{ fontWeight: 700, color: '#1e3a8a', fontSize: '0.85rem', marginLeft: 8 }}>₹{item.total.toFixed(2)}</div>
+                </div>
               ))}
-            </tbody>
-          </table>
-          </div>
-
-          {/* Invoice Summary and Tax Analysis */}
-          <div className="invoice-summary-responsive responsive-grid-2" style={{ gap: '40px' }}>
-            {/* Tax Details Table */}
-            <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', height: 'fit-content' }}>
-              <h5 style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#1e293b' }}>GST HSN Breakdown Summary</h5>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem', color: '#475569' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #e2e8f0', fontWeight: 600 }}>
-                    <th style={{ padding: '6px 0', textAlign: 'left' }}>Tax Rate</th>
-                    <th style={{ padding: '6px 0', textAlign: 'right' }}>Taxable Value</th>
-                    {isInterstate ? (
-                      <th style={{ padding: '6px 0', textAlign: 'right' }}>IGST</th>
-                    ) : (
-                      <>
-                        <th style={{ padding: '6px 0', textAlign: 'right' }}>CGST</th>
-                        <th style={{ padding: '6px 0', textAlign: 'right' }}>SGST</th>
-                      </>
-                    )}
-                    <th style={{ padding: '6px 0', textAlign: 'right' }}>Total Tax</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* Categorize tax details */}
-                  {Array.from(new Set(selectedInvoice.items.map(i => i.taxRate))).map(rate => {
-                    const rateItems = selectedInvoice.items.filter(i => i.taxRate === rate);
-                    const taxableVal = rateItems.reduce((acc, curr) => acc + curr.total, 0);
-                    const taxAmt = (taxableVal * rate) / 100;
-                    return (
-                      <tr key={rate} style={{ borderBottom: '1px dotted #e2e8f0' }}>
-                        <td style={{ padding: '6px 0' }}>{rate}% GST</td>
-                        <td style={{ padding: '6px 0', textAlign: 'right' }}>₹{taxableVal.toFixed(2)}</td>
-                        {isInterstate ? (
-                          <td style={{ padding: '6px 0', textAlign: 'right' }}>₹{taxAmt.toFixed(2)}</td>
-                        ) : (
-                          <>
-                            <td style={{ padding: '6px 0', textAlign: 'right' }}>₹{(taxAmt / 2).toFixed(2)}</td>
-                            <td style={{ padding: '6px 0', textAlign: 'right' }}>₹{(taxAmt / 2).toFixed(2)}</td>
-                          </>
-                        )}
-                        <td style={{ padding: '6px 0', textAlign: 'right', fontWeight: 600 }}>₹{taxAmt.toFixed(2)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
             </div>
 
-            {/* Calculations right */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
-                <tbody>
-                  <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <td style={{ padding: '8px 0', color: '#64748b' }}>Subtotal (Excl. Taxes)</td>
-                    <td style={{ padding: '8px 0', textAlign: 'right', fontWeight: 500 }}>₹{selectedInvoice.subtotal.toFixed(2)}</td>
-                  </tr>
-                  {selectedInvoice.discount > 0 && (
-                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                      <td style={{ padding: '8px 0', color: '#64748b' }}>Trade Discount</td>
-                      <td style={{ padding: '8px 0', textAlign: 'right', color: '#dc2626' }}>-₹{selectedInvoice.discount.toFixed(2)}</td>
-                    </tr>
-                  )}
-                  <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <td style={{ padding: '8px 0', color: '#64748b' }}>Total GST Amount</td>
-                    <td style={{ padding: '8px 0', textAlign: 'right', fontWeight: 500 }}>₹{selectedInvoice.taxAmount.toFixed(2)}</td>
-                  </tr>
-                  <tr style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1e3a8a' }}>
-                    <td style={{ padding: '16px 0 8px 0' }}>Grand Total (INR)</td>
-                    <td style={{ padding: '16px 0 8px 0', textAlign: 'right' }}>₹{selectedInvoice.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                  </tr>
-                </tbody>
-              </table>
+            {/* Totals */}
+            <div style={{ borderTop: '2px solid #1e3a8a', paddingTop: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: 4 }}>
+                <span style={{ color: '#64748b' }}>Subtotal</span>
+                <span>₹{selectedInvoice.subtotal.toFixed(2)}</span>
+              </div>
+              {selectedInvoice.discount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: 4, color: '#dc2626' }}>
+                  <span>Discount</span>
+                  <span>-₹{selectedInvoice.discount.toFixed(2)}</span>
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: 8 }}>
+                <span style={{ color: '#64748b' }}>GST</span>
+                <span>₹{selectedInvoice.taxAmount.toFixed(2)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1rem', fontWeight: 700, color: '#1e3a8a', borderTop: '1px solid #e2e8f0', paddingTop: 8 }}>
+                <span>Grand Total</span>
+                <span>₹{selectedInvoice.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              </div>
             </div>
-          </div>
 
-          {/* Footer Signature */}
-          <div className="invoice-footer">
-            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
-              Thank you for your business!<br />
-              Generated electronically via <strong>Vyapora SaaS platform</strong>
-            </div>
-            <div className="signatory-box">
-              <div className="signatory-line"></div>
-              <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: '6px', fontWeight: 600 }}>Authorized Signatory</div>
+            {/* Footer */}
+            <div style={{ marginTop: 20, paddingTop: 12, borderTop: '1px dashed #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+              <div style={{ fontSize: '0.65rem', color: '#94a3b8' }}>
+                Generated via <strong>Vyapora</strong>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ borderBottom: '1px solid #cbd5e1', width: 100, marginBottom: 4 }}></div>
+                <div style={{ fontSize: '0.65rem', color: '#64748b' }}>Signatory</div>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Partial Payment Modal */}
+        {isPartialPayOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h3>Record Payment for {selectedInvoice.invoiceNo}</h3>
+                <button className="icon-btn" onClick={() => setIsPartialPayOpen(false)}><X size={20} /></button>
+              </div>
+              <div className="modal-body">
+                <div style={{ background: '#f8fafc', borderRadius: 8, padding: 12, marginBottom: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: 4 }}>
+                    <span style={{ color: '#64748b' }}>Invoice Total</span>
+                    <strong>₹{selectedInvoice.grandTotal.toFixed(2)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: 4 }}>
+                    <span style={{ color: '#64748b' }}>Already Paid</span>
+                    <strong style={{ color: '#059669' }}>₹{selectedInvoice.amountPaid.toFixed(2)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem', fontWeight: 700, borderTop: '1px solid #e2e8f0', paddingTop: 6, color: '#dc2626' }}>
+                    <span>Remaining Dues</span>
+                    <span>₹{outstanding.toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Payment Amount (₹) *</label>
+                  <div className="input-addon-group">
+                    <span className="input-addon-left">₹</span>
+                    <input 
+                      type="number" 
+                      value={partialPayAmount} 
+                      onChange={(e) => setPartialPayAmount(e.target.value)} 
+                      className="form-control input-with-addon-left" 
+                      placeholder={`Max: ₹${outstanding.toFixed(2)}`}
+                      min="1"
+                      max={outstanding}
+                      step="0.01"
+                    />
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                    <button className="btn btn-secondary btn-sm" onClick={() => setPartialPayAmount(String(Math.round(outstanding / 2)))} style={{ flex: 1, fontSize: '0.75rem' }}>50%</button>
+                    <button className="btn btn-secondary btn-sm" onClick={() => setPartialPayAmount(String(outstanding))} style={{ flex: 1, fontSize: '0.75rem' }}>Full ₹{outstanding.toFixed(2)}</button>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Payment Mode</label>
+                  <select value={partialPayMode} onChange={(e) => setPartialPayMode(e.target.value)} className="form-control">
+                    <option value="UPI">UPI (GPay/PhonePe/Paytm)</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Credit/Debit Card</option>
+                    <option value="Bank Transfer">Net Banking / IMPS</option>
+                  </select>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setIsPartialPayOpen(false)}>Cancel</button>
+                <button className="btn btn-success" onClick={handlePartialPay}>Record Payment</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Change Payment Status Modal */}
+        {isChangeStatusOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h3>Change Payment Status - {selectedInvoice.invoiceNo}</h3>
+                <button className="icon-btn" onClick={() => setIsChangeStatusOpen(false)}><X size={20} /></button>
+              </div>
+              <div className="modal-body">
+                <div style={{ background: '#f8fafc', borderRadius: 8, padding: 12, marginBottom: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: 4 }}>
+                    <span style={{ color: '#64748b' }}>Invoice Total</span>
+                    <strong>₹{selectedInvoice.grandTotal.toFixed(2)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: 4 }}>
+                    <span style={{ color: '#64748b' }}>Current Status</span>
+                    <strong>{selectedInvoice.paymentStatus}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                    <span style={{ color: '#64748b' }}>Amount Paid</span>
+                    <strong style={{ color: '#059669' }}>₹{selectedInvoice.amountPaid.toFixed(2)}</strong>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">New Payment Status *</label>
+                  <select value={changeStatusValue} onChange={(e) => setChangeStatusValue(e.target.value)} className="form-control">
+                    <option value="">-- Select Status --</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Partially Paid">Partially Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                  </select>
+                </div>
+
+                {changeStatusValue === 'Partially Paid' && (
+                  <div className="form-group">
+                    <label className="form-label">Amount Paid (₹) *</label>
+                    <div className="input-addon-group">
+                      <span className="input-addon-left">₹</span>
+                      <input 
+                        type="number" 
+                        value={changeStatusAmount} 
+                        onChange={(e) => setChangeStatusAmount(e.target.value)} 
+                        className="form-control input-with-addon-left" 
+                        placeholder={`Max: ₹${(selectedInvoice.grandTotal - 0.01).toFixed(2)}`}
+                        min="1"
+                        max={selectedInvoice.grandTotal - 0.01}
+                        step="0.01"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="form-group">
+                  <label className="form-label">Payment Mode</label>
+                  <select value={changeStatusMode} onChange={(e) => setChangeStatusMode(e.target.value)} className="form-control">
+                    <option value="UPI">UPI (GPay/PhonePe/Paytm)</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Credit/Debit Card</option>
+                    <option value="Bank Transfer">Net Banking / IMPS</option>
+                  </select>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setIsChangeStatusOpen(false)}>Cancel</button>
+                <button className="btn btn-success" onClick={handleChangePaymentStatus}>Change Status</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
-  // Otherwise, list invoices
+  // ─── INVOICE LIST VIEW ───
   return (
     <div>
-      {/* View Header */}
+      {/* Mobile View Header */}
+      <div className="mobile-view-header">
+        <h1>Sales & Invoices</h1>
+        <p>Record sales transactions, trace payments, and print tax receipts</p>
+        <div className="mobile-view-header-actions">
+          <button className="btn btn-success" onClick={() => setIsPayOpen(true)} style={{ flex: 1 }}>
+            <CreditCard size={16} /> Record Payment
+          </button>
+          <button className="btn btn-primary" onClick={onOpenInvoiceModal} style={{ flex: 1 }}>
+            <Plus size={16} /> Create Invoice
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Bento Summary */}
+      <div className="mobile-bento">
+        <div className="mobile-bento-card full-width highlight">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <div className="mobile-bento-label" style={{ opacity: 0.8 }}>Total Receivables</div>
+              <div className="mobile-bento-value large">₹{totalInvoiced.toLocaleString('en-IN')}</div>
+            </div>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.7rem', opacity: 0.9 }}>
+              <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#4ade80' }}></span>
+              +12% from last month
+            </span>
+          </div>
+        </div>
+        <div className="mobile-bento-card" style={{ border: '1px solid rgba(220,38,38,0.2)' }}>
+          <div className="mobile-bento-label" style={{ color: 'var(--danger)' }}>Overdue</div>
+          <div className="mobile-bento-value" style={{ color: 'var(--danger)' }}>₹{pendingCollection.toLocaleString('en-IN')}</div>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Pending</div>
+          <div className="mobile-bento-value">{invoices.filter(i => i.paymentStatus === 'Partially Paid' || i.paymentStatus === 'Unpaid').length} Invoices</div>
+        </div>
+      </div>
+
+      {/* Mobile Search & Filter */}
+      <div className="mobile-search-bar">
+        <div className="mobile-search-input-wrapper">
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Search invoices or clients..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="mobile-search-input"
+          />
+        </div>
+        <div className="mobile-filter-chips">
+          <button className={`mobile-chip ${paymentFilter === 'all' ? 'active' : ''}`} onClick={() => setPaymentFilter('all')}>All</button>
+          <button className={`mobile-chip ${paymentFilter === 'Paid' ? 'active' : ''}`} onClick={() => setPaymentFilter('Paid')}>Paid</button>
+          <button className={`mobile-chip ${paymentFilter === 'Partially Paid' ? 'active' : ''}`} onClick={() => setPaymentFilter('Partially Paid')}>Pending</button>
+          <button className={`mobile-chip ${paymentFilter === 'Unpaid' ? 'active' : ''}`} onClick={() => setPaymentFilter('Unpaid')}>Overdue</button>
+        </div>
+      </div>
+
+      {/* Mobile Card List */}
+      <div className="mobile-card-list">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingLeft: 4 }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Recent Invoices
+          </span>
+        </div>
+        {filteredInvoices.length === 0 ? (
+          <div className="mobile-card" style={{ textAlign: 'center', padding: '32px 16px' }}>
+            <FileText size={32} style={{ color: 'var(--text-muted)', opacity: 0.4, marginBottom: 8 }} />
+            <p style={{ fontWeight: 600, color: 'var(--text-main)' }}>No Invoices Found</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Create your first sales invoice.</p>
+          </div>
+        ) : (
+          filteredInvoices.map(inv => (
+            <div key={inv.invoiceNo} className="mobile-card" onClick={() => setSelectedInvoice(inv)} style={{ cursor: 'pointer' }}>
+              <div className="mobile-card-header">
+                <div className="mobile-card-left">
+                  <div className={`mobile-card-avatar ${inv.paymentStatus === 'Paid' ? 'success' : inv.paymentStatus === 'Partially Paid' ? 'warning' : 'danger'}`}>
+                    <FileText size={18} />
+                  </div>
+                  <div>
+                    <div className="mobile-card-title">{inv.customerName}</div>
+                    <div className="mobile-card-subtitle">{inv.invoiceNo} • {inv.date}</div>
+                  </div>
+                </div>
+                <span className={`badge ${
+                  inv.paymentStatus === 'Paid' ? 'badge-success' : 
+                  inv.paymentStatus === 'Partially Paid' ? 'badge-warning' : 'badge-danger'
+                }`} style={{ fontSize: '0.65rem' }}>
+                  {inv.paymentStatus}
+                </span>
+              </div>
+              <div className="mobile-card-body">
+                <div className="mobile-card-stat">
+                  <span className="mobile-card-stat-label">Total</span>
+                  <span className="mobile-card-stat-value primary">₹{inv.grandTotal.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="mobile-card-stat" style={{ textAlign: 'right' }}>
+                  <span className="mobile-card-stat-label">Collected</span>
+                  <span className="mobile-card-stat-value success">₹{inv.amountPaid.toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop View Header */}
       <div className="view-header">
         <div>
           <h2>Sales Invoices & Billing</h2>
@@ -361,13 +606,22 @@ const Sales = ({
                     <span className="badge badge-secondary" style={{ textTransform: 'uppercase', fontSize: '0.65rem' }}>{inv.paymentMode}</span>
                   </td>
                   <td style={{ textAlign: 'center' }}>
-                    <button 
-                      className="btn btn-secondary btn-sm" 
-                      onClick={() => setSelectedInvoice(inv)}
-                      style={{ padding: '4px 8px' }}
-                    >
-                      <Printer size={12} /> View/Print
-                    </button>
+                    <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                      <button 
+                        className="btn btn-secondary btn-sm" 
+                        onClick={() => setSelectedInvoice(inv)}
+                        style={{ padding: '4px 8px' }}
+                      >
+                        <Printer size={12} /> View/Print
+                      </button>
+                      <button 
+                        className="btn btn-danger btn-sm" 
+                        onClick={() => { if (confirm(`Delete invoice ${inv.invoiceNo}? This will restore stock and adjust customer balance.`)) deleteInvoice(inv.invoiceNo); }}
+                        style={{ padding: '4px 8px' }}
+                      >
+                        <Trash2 size={12} /> Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

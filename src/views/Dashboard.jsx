@@ -47,6 +47,82 @@ const Dashboard = ({
 
   return (
     <div>
+      {/* Mobile View Header */}
+      <div className="mobile-view-header">
+        <h1>Dashboard</h1>
+        <p>Real-time overview of your business</p>
+      </div>
+
+      {/* Mobile Bento Summary */}
+      <div className="mobile-bento">
+        <div className="mobile-bento-card full-width highlight">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <div className="mobile-bento-label" style={{ opacity: 0.8 }}>Total Sales</div>
+              <div className="mobile-bento-value large">₹{totalSales.toLocaleString('en-IN')}</div>
+            </div>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.7rem', opacity: 0.9 }}>
+              <ArrowUpRight size={14} /> +12.4%
+            </span>
+          </div>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Receivables</div>
+          <div className="mobile-bento-value">₹{totalReceivables.toLocaleString('en-IN')}</div>
+          <div className="mobile-bento-trend" style={{ color: 'var(--danger)' }}>
+            <ArrowDownRight size={12} /> -3.2%
+          </div>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Payables</div>
+          <div className="mobile-bento-value">₹{totalPayables.toLocaleString('en-IN')}</div>
+          <div className="mobile-bento-trend" style={{ color: 'var(--success)' }}>
+            <ArrowUpRight size={12} /> +5.8%
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Alerts */}
+      {notifications.length > 0 && (
+        <div className="mobile-only" style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8, paddingLeft: 4 }}>
+            Alerts ({notifications.length})
+          </div>
+          {notifications.slice(0, 2).map(alert => (
+            <div 
+              key={alert.id} 
+              className="mobile-card" 
+              onClick={() => setActiveView(alert.targetLink)}
+              style={{ cursor: 'pointer', marginBottom: 8, borderLeft: `4px solid ${alert.type === 'low_stock' ? 'var(--warning)' : alert.type === 'expiry' ? 'var(--danger)' : 'var(--primary)'}` }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <AlertOctagon size={16} style={{ color: alert.type === 'low_stock' ? 'var(--warning)' : alert.type === 'expiry' ? 'var(--danger)' : 'var(--primary)' }} />
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{alert.title}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{alert.message}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Mobile Quick Actions */}
+      <div className="mobile-only" style={{ marginBottom: 16 }}>
+        <div style={{ display: 'flex', gap: 8 }}>
+        <button className="btn btn-primary" onClick={openInvoiceModal} style={{ flex: 1, fontSize: '0.8rem', padding: '10px 8px' }}>
+          <FilePlus2 size={14} /> Invoice
+        </button>
+        <button className="btn btn-success" onClick={openPurchaseModal} style={{ flex: 1, fontSize: '0.8rem', padding: '10px 8px' }}>
+          <PlusSquare size={14} /> Purchase
+        </button>
+        <button className="btn btn-secondary" onClick={openProductModal} style={{ flex: 1, fontSize: '0.8rem', padding: '10px 8px' }}>
+          <PlusCircle size={14} /> Product
+        </button>
+        </div>
+      </div>
+
+      {/* Desktop View Header */}
       <div className="view-header">
         <div>
           <h2>Business Dashboard</h2>

@@ -44,7 +44,112 @@ const Purchases = ({
 
   return (
     <div>
-      {/* View Header */}
+      {/* Mobile View Header */}
+      <div className="mobile-view-header">
+        <h1>Purchases & POs</h1>
+        <p>Record purchases, monitor invoices, and manage payment credits</p>
+        <div className="mobile-view-header-actions">
+          <button className="btn btn-success" onClick={() => setIsPayOpen(true)} style={{ flex: 1 }}>
+            <IndianRupee size={16} /> Pay Supplier
+          </button>
+          <button className="btn btn-primary" onClick={onOpenPurchaseModal} style={{ flex: 1 }}>
+            <Plus size={16} /> New Purchase
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Bento Summary */}
+      <div className="mobile-bento">
+        <div className="mobile-bento-card full-width highlight">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <div className="mobile-bento-label" style={{ opacity: 0.8 }}>Total Payables</div>
+              <div className="mobile-bento-value large">₹{totalPurchases.toLocaleString('en-IN')}</div>
+            </div>
+            {totalDues > 0 && (
+              <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 700 }}>OVERDUE</span>
+            )}
+          </div>
+          <div className="mobile-progress" style={{ marginTop: 12, background: 'rgba(255,255,255,0.2)' }}>
+            <div className="mobile-progress-fill" style={{ width: `${Math.min(100, (totalDues / (totalPurchases || 1)) * 100)}%`, background: 'white' }}></div>
+          </div>
+          <div className="mobile-bento-trend" style={{ opacity: 0.8, marginTop: 4 }}>
+            {totalDues > 0 ? `${Math.round((totalDues / totalPurchases) * 100)}% of credit limit used` : 'All dues settled'}
+          </div>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Pending</div>
+          <div className="mobile-bento-value">{purchases.filter(p => p.paymentStatus === 'Pending').length} POs</div>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Received</div>
+          <div className="mobile-bento-value">{purchases.filter(p => p.status === 'Received').length} Items</div>
+        </div>
+      </div>
+
+      {/* Mobile Search & Filter */}
+      <div className="mobile-search-bar">
+        <div className="mobile-search-input-wrapper">
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Search POs, Suppliers..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="mobile-search-input"
+          />
+        </div>
+        <div className="mobile-filter-chips">
+          <button className={`mobile-chip ${statusFilter === 'all' ? 'active' : ''}`} onClick={() => setStatusFilter('all')}>All Time</button>
+          <button className={`mobile-chip ${statusFilter === 'Paid' ? 'active' : ''}`} onClick={() => setStatusFilter('Paid')}>Paid</button>
+          <button className={`mobile-chip ${statusFilter === 'Pending' ? 'active' : ''}`} onClick={() => setStatusFilter('Pending')}>Pending</button>
+        </div>
+      </div>
+
+      {/* Mobile Card List */}
+      <div className="mobile-card-list">
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', paddingLeft: 4, marginBottom: 4 }}>
+          Recent Purchase Orders
+        </div>
+        {filteredPurchases.length === 0 ? (
+          <div className="mobile-card" style={{ textAlign: 'center', padding: '32px 16px' }}>
+            <ShoppingCart size={32} style={{ color: 'var(--text-muted)', opacity: 0.4, marginBottom: 8 }} />
+            <p style={{ fontWeight: 600, color: 'var(--text-main)' }}>No Purchase Orders</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Create your first purchase order.</p>
+          </div>
+        ) : (
+          filteredPurchases.map(po => (
+            <div key={po.poNo} className="mobile-card">
+              <div className="mobile-card-header">
+                <div className="mobile-card-left">
+                  <div className={`mobile-card-avatar ${po.paymentStatus === 'Paid' ? 'success' : 'warning'}`}>
+                    <ShoppingCart size={18} />
+                  </div>
+                  <div>
+                    <div className="mobile-card-title">{po.supplierName}</div>
+                    <div className="mobile-card-subtitle">{po.poNo} • {po.date}</div>
+                  </div>
+                </div>
+                <span className={`badge ${po.paymentStatus === 'Paid' ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.65rem' }}>
+                  {po.paymentStatus}
+                </span>
+              </div>
+              <div className="mobile-card-body">
+                <div className="mobile-card-stat">
+                  <span className="mobile-card-stat-label">Status</span>
+                  <span className="mobile-card-stat-value">{po.status}</span>
+                </div>
+                <div className="mobile-card-stat" style={{ textAlign: 'right' }}>
+                  <span className="mobile-card-stat-label">Grand Total</span>
+                  <span className="mobile-card-stat-value primary">₹{po.grandTotal.toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop View Header */}
       <div className="view-header">
         <div>
           <h2>Purchases & Goods Inward</h2>
@@ -60,7 +165,7 @@ const Purchases = ({
         </div>
       </div>
 
-      {/* Mini Stats Card */}
+      {/* Desktop Mini Stats Card */}
       <div className="kpi-grid" style={{ marginBottom: '24px' }}>
         <div className="kpi-card" style={{ padding: '16px' }}>
           <div className="kpi-left">
@@ -76,7 +181,7 @@ const Purchases = ({
         </div>
       </div>
 
-      {/* Table grid control */}
+      {/* Desktop Table grid control */}
       <div className="table-container">
         <div className="table-header-controls">
           <div className="table-search-input" style={{ position: 'relative' }}>

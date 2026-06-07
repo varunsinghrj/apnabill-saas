@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, AlertTriangle, PackagePlus, Edit, Trash2 } from 'lucide-react';
+import { Search, AlertTriangle, PackagePlus, Edit, Trash2, Package } from 'lucide-react';
 
 const Inventory = ({ products, deleteProduct, onOpenAddModal, onOpenEditModal }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +63,112 @@ const Inventory = ({ products, deleteProduct, onOpenAddModal, onOpenEditModal })
 
   return (
     <div>
-      {/* View Header */}
+      {/* Mobile View Header */}
+      <div className="mobile-view-header">
+        <h1>Inventory</h1>
+        <p>Manage products, batch details, and warehouse stocks</p>
+        <div className="mobile-view-header-actions">
+          <button className="btn btn-primary" onClick={onOpenAddModal} style={{ flex: 1 }}>
+            <PackagePlus size={16} /> Add Product
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Bento Summary */}
+      <div className="mobile-bento">
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">SKUs</div>
+          <div className="mobile-bento-value">{totalSKUs}</div>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Stock Qty</div>
+          <div className="mobile-bento-value">{totalStockQty.toLocaleString('en-IN')}</div>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Low Stock</div>
+          <div className="mobile-bento-value" style={{ color: lowStockCount > 0 ? 'var(--warning)' : 'inherit' }}>{lowStockCount}</div>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Expiring</div>
+          <div className="mobile-bento-value" style={{ color: expiringCount > 0 ? 'var(--danger)' : 'inherit' }}>{expiringCount}</div>
+        </div>
+      </div>
+
+      {/* Mobile Search & Filter */}
+      <div className="mobile-search-bar">
+        <div className="mobile-search-input-wrapper">
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Search by name, SKU, HSN..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="mobile-search-input"
+          />
+        </div>
+        <div className="mobile-filter-chips">
+          <button className={`mobile-chip ${stockStatus === 'all' ? 'active' : ''}`} onClick={() => setStockStatus('all')}>All</button>
+          <button className={`mobile-chip ${stockStatus === 'low' ? 'active' : ''}`} onClick={() => setStockStatus('low')}>Low Stock</button>
+          <button className={`mobile-chip ${stockStatus === 'out' ? 'active' : ''}`} onClick={() => setStockStatus('out')}>Out</button>
+          <button className={`mobile-chip ${stockStatus === 'expiring' ? 'active' : ''}`} onClick={() => setStockStatus('expiring')}>Expiring</button>
+        </div>
+      </div>
+
+      {/* Mobile Card List */}
+      <div className="mobile-card-list">
+        {filteredProducts.length === 0 ? (
+          <div className="mobile-card" style={{ textAlign: 'center', padding: '32px 16px' }}>
+            <AlertTriangle size={32} style={{ color: 'var(--text-muted)', opacity: 0.4, marginBottom: 8 }} />
+            <p style={{ fontWeight: 600, color: 'var(--text-main)' }}>No products found</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Add a product to get started.</p>
+          </div>
+        ) : (
+          filteredProducts.map(p => (
+            <div key={p.id} className="mobile-card">
+              <div className="mobile-card-header">
+                <div className="mobile-card-left">
+                  <div className={`mobile-card-avatar ${p.stock === 0 ? 'danger' : p.stock <= p.minStock ? 'warning' : 'success'}`}>
+                    <Package size={18} />
+                  </div>
+                  <div>
+                    <div className="mobile-card-title">{p.name}</div>
+                    <div className="mobile-card-subtitle">SKU: {p.sku || 'N/A'} • HSN: {p.hsn}</div>
+                  </div>
+                </div>
+                <span className={`badge ${p.stock === 0 ? 'badge-danger' : p.stock <= p.minStock ? 'badge-warning' : 'badge-success'}`} style={{ fontSize: '0.6rem' }}>
+                  {p.stock === 0 ? 'Out' : p.stock <= p.minStock ? 'Low' : 'In Stock'}
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, padding: '12px 0', borderTop: '1px solid var(--border)' }}>
+                <div>
+                  <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Stock</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, marginTop: 2 }}>{p.stock}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Cost</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, marginTop: 2 }}>₹{p.costPrice}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Sell</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary)', marginTop: 2 }}>₹{p.sellingPrice}</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6, paddingTop: 8, borderTop: '1px solid var(--border)' }}>
+                <button className="mobile-card-action-btn primary" onClick={() => onOpenEditModal(p)}>
+                  <Edit size={14} />
+                </button>
+                <button className="mobile-card-action-btn danger" onClick={() => {
+                  if (confirm(`Delete ${p.name}?`)) deleteProduct(p.id);
+                }}>
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop View Header */}
       <div className="view-header">
         <div>
           <h2>Inventory Catalog</h2>

@@ -27,6 +27,13 @@ const SettingsGST = ({ settings, setSettings }) => {
 
   return (
     <div style={{ maxWidth: '800px' }}>
+      {/* Mobile View Header */}
+      <div className="mobile-view-header">
+        <h1>Settings</h1>
+        <p>Configure your business profile and GST settings</p>
+      </div>
+
+      {/* Desktop View Header */}
       <div className="view-header">
         <div>
           <h2>GST & Business Profile</h2>

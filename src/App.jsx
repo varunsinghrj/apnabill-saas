@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApiStore } from './store/apiStore';
 
 // Layout Components
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
+import MobileNav from './components/MobileNav';
 
 // Modals
 import ProductModal from './components/ProductModal';
@@ -53,6 +54,9 @@ function App() {
     addPurchaseOrder,
     recordCustomerPayment,
     recordSupplierPayment,
+    markInvoicePaid,
+    changePaymentStatus,
+    deleteInvoice,
     updateSubscriptionPlan,
     addTeamMember,
     deleteTeamMember,
@@ -70,6 +74,15 @@ function App() {
   // Layout collapsed state
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // Mobile detection
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Global search input state
   const [globalSearchQuery, setGlobalSearchQuery] = useState('');
@@ -205,6 +218,9 @@ function App() {
             customers={customers}
             addInvoice={addInvoice}
             recordCustomerPayment={recordCustomerPayment}
+            markInvoicePaid={markInvoicePaid}
+            changePaymentStatus={changePaymentStatus}
+            deleteInvoice={deleteInvoice}
             onOpenInvoiceModal={() => setIsInvoiceModalOpen(true)}
             settings={settings}
           />
@@ -247,6 +263,8 @@ function App() {
             customers={customers}
             suppliers={suppliers}
             invoices={invoices}
+            purchases={purchases}
+            settings={settings}
             notifications={notifications}
             openPurchaseModal={() => setIsPurchaseModalOpen(true)}
           />
@@ -413,6 +431,17 @@ function App() {
         onSubmit={handleSupplierSubmit}
         supplier={editingSupplier}
       />
+
+      {/* Mobile Bottom Navigation */}
+      {isMobile && (
+        <MobileNav 
+          activeView={activeView} 
+          setActiveView={(view) => {
+            setActiveView(view);
+            window.scrollTo(0, 0);
+          }} 
+        />
+      )}
     </div>
   );
 }

@@ -33,6 +33,22 @@ const SettingsRoles = ({ roles, addTeamMember, deleteTeamMember, toggleTeamMembe
 
   return (
     <div>
+      {/* Mobile View Header */}
+      <div className="mobile-view-header">
+        <h1>Team Access</h1>
+        <p>Invite staff, assign store permissions, and oversee operator logs</p>
+        <div className="mobile-view-header-actions">
+          <button 
+            className="btn btn-primary" 
+            onClick={() => setIsAddOpen(true)}
+            disabled={isLocked}
+            style={{ flex: 1 }}
+          >
+            <UserPlus size={16} /> Invite User
+          </button>
+        </div>
+      </div>
+
       <div className="view-header">
         <div>
           <h2>User Roles & Permissions</h2>

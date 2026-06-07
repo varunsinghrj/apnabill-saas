@@ -23,7 +23,70 @@ const Reports = ({ products, invoices, purchases }) => {
 
   return (
     <div>
-      {/* View Header */}
+      {/* Mobile View Header */}
+      <div className="mobile-view-header">
+        <h1>Reports</h1>
+        <p>Performance Summary</p>
+        <div style={{ display: 'flex', background: 'var(--bg-main)', borderRadius: 8, padding: 3, marginTop: 12 }}>
+          <button 
+            className={`mobile-chip ${activeReportTab === 'stock-val' ? 'active' : ''}`}
+            onClick={() => setActiveReportTab('stock-val')}
+            style={{ flex: 1, border: 'none', borderRadius: 6 }}
+          >
+            Stock
+          </button>
+          <button 
+            className={`mobile-chip ${activeReportTab === 'gst-ledger' ? 'active' : ''}`}
+            onClick={() => setActiveReportTab('gst-ledger')}
+            style={{ flex: 1, border: 'none', borderRadius: 6 }}
+          >
+            GST
+          </button>
+          <button 
+            className={`mobile-chip ${activeReportTab === 'profit-margin' ? 'active' : ''}`}
+            onClick={() => setActiveReportTab('profit-margin')}
+            style={{ flex: 1, border: 'none', borderRadius: 6 }}
+          >
+            Sales
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Bento Summary */}
+      <div className="mobile-bento">
+        <div className="mobile-bento-card full-width">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <div className="mobile-bento-label">Net Revenue</div>
+              <div className="mobile-bento-value large" style={{ color: 'var(--primary)' }}>₹{totalRetailVal.toLocaleString('en-IN')}</div>
+            </div>
+            <span style={{ color: 'var(--success)', fontSize: '0.7rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+              +{totalCostVal > 0 ? Math.round((potentialProfit / totalCostVal) * 100) : 0}%
+            </span>
+          </div>
+          <div className="mobile-progress" style={{ marginTop: 8 }}>
+            <div className="mobile-progress-fill primary" style={{ width: '70%' }}></div>
+          </div>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Inventory</div>
+          <div className="mobile-bento-value">₹{(totalCostVal / 100000).toFixed(1)}L</div>
+          <div className="mobile-progress" style={{ marginTop: 6 }}>
+            <div className="mobile-progress-fill success" style={{ width: '65%' }}></div>
+          </div>
+          <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>Optimal Stock</span>
+        </div>
+        <div className="mobile-bento-card">
+          <div className="mobile-bento-label">Sales Velocity</div>
+          <div className="mobile-bento-value">{invoices.length}/mo</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 6 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--primary)' }}></span>
+            <span style={{ fontSize: '0.6rem', color: 'var(--primary)', fontWeight: 600 }}>Active</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop View Header */}
       <div className="view-header">
         <div>
           <h2>Reports & Financials</h2>
@@ -31,8 +94,8 @@ const Reports = ({ products, invoices, purchases }) => {
         </div>
       </div>
 
-      {/* Reports Navigation Tabs */}
-      <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #e2e8f0', marginBottom: '24px', paddingBottom: '1px' }}>
+      {/* Desktop Reports Navigation Tabs */}
+      <div className="desktop-only-tabs" style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #e2e8f0', marginBottom: '24px', paddingBottom: '1px' }}>
         <button 
           className={`btn ${activeReportTab === 'stock-val' ? 'btn-primary' : 'btn-secondary'}`}
           onClick={() => setActiveReportTab('stock-val')}

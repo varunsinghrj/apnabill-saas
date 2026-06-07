@@ -14,7 +14,7 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product = null }) => {
     minStock: '10',
     batchNo: '',
     expiryDate: '',
-    warehouse: 'Warehouse Noida-A'
+    warehouse: ''
   });
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product = null }) => {
         minStock: product.minStock || '10',
         batchNo: product.batchNo || '',
         expiryDate: product.expiryDate || '',
-        warehouse: product.warehouse || 'Warehouse Noida-A'
+        warehouse: product.warehouse || ''
       });
     } else {
       setFormData({
@@ -47,7 +47,7 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product = null }) => {
         minStock: '10',
         batchNo: `B-${Math.floor(100 + Math.random() * 900)}`,
         expiryDate: '',
-        warehouse: 'Warehouse Noida-A'
+        warehouse: ''
       });
     }
   }, [product, isOpen]);
@@ -231,11 +231,20 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product = null }) => {
 
             <div className="form-group">
               <label className="form-label">Warehouse Location</label>
-              <select name="warehouse" value={formData.warehouse} onChange={handleChange} className="form-control">
-                <option value="Warehouse Noida-A">Warehouse Noida-A</option>
-                <option value="Warehouse Noida-B">Warehouse Noida-B</option>
-                <option value="Cold Storage Noida">Cold Storage Noida</option>
-              </select>
+              <input
+                type="text"
+                name="warehouse"
+                value={formData.warehouse}
+                onChange={handleChange}
+                className="form-control"
+                placeholder="e.g. Main Godown, Rack B3"
+                list="warehouse-suggestions"
+              />
+              <datalist id="warehouse-suggestions">
+                <option value="Warehouse Noida-A" />
+                <option value="Warehouse Noida-B" />
+                <option value="Cold Storage Noida" />
+              </datalist>
             </div>
           </div>
           <div className="modal-footer">

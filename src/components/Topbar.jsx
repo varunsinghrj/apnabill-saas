@@ -51,7 +51,7 @@ const Topbar = ({
         </button>
         
         <div className="business-selector">
-          <span>{settings.businessName || 'My Business'}</span>
+          <span>Vyapora</span>
           <span style={{ fontSize: '0.75rem', opacity: 0.8 }}>
             (GSTIN: {settings.gstin || 'Unregistered'})
           </span>

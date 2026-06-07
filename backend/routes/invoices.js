@@ -76,4 +76,42 @@ router.put('/:invoiceNo', (req, res) => {
   }
 });
 
+// DELETE /api/invoices/:invoiceNo
+router.delete('/:invoiceNo', (req, res) => {
+  try {
+    const userId = req.user.id;
+    const existing = db.get('invoices').find({ invoice_no: req.params.invoiceNo, user_id: userId }).value();
+    if (!existing) return res.status(404).json({ error: 'Invoice not found' });
+
+    // 1. Restore product stock
+    const items = db.get('invoice_items').filter({ invoice_no: req.params.invoiceNo, user_id: userId }).value();
+    items.forEach(item => {
+      if (item.product_id) {
+        const prod = db.get('products').find({ id: item.product_id, user_id: userId }).value();
+        if (prod) {
+          db.get('products').find({ id: item.product_id, user_id: userId }).assign({ stock: prod.stock + item.qty }).write();
+        }
+      }
+    });
+
+    // 2. Restore customer balance
+    const unpaidAmt = existing.grand_total - existing.amount_paid;
+    if (unpaidAmt > 0 && existing.customer_id) {
+      const cust = db.get('customers').find({ id: existing.customer_id, user_id: userId }).value();
+      if (cust) {
+        db.get('customers').find({ id: existing.customer_id, user_id: userId }).assign({ balance: Math.max(0, cust.balance - unpaidAmt) }).write();
+      }
+    }
+
+    // 3. Delete invoice items then invoice
+    db.get('invoice_items').remove({ invoice_no: req.params.invoiceNo, user_id: userId }).write();
+    db.get('invoices').remove({ invoice_no: req.params.invoiceNo, user_id: userId }).write();
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Invoice delete error:', err);
+    res.status(500).json({ error: 'Failed to delete invoice' });
+  }
+});
+
 module.exports = router;
